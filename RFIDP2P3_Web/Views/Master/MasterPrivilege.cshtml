@@ -1,0 +1,383 @@
+﻿@{
+	ViewData["Title"] = "Master Privilege";
+}
+
+<style>
+	.del {
+		background-color: #fdd;
+	}
+
+	.edit {
+		background-color: #fda;
+	}
+
+	.add {
+		background-color: #ced;
+	}
+
+	.read {
+		background-color: #b3fff6;
+	}
+
+	div.k-popup .k-item {
+		font: 11px Roboto, sans-serif;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.k-grid-content {
+		height: 70vh;
+	}
+
+	.top-sm {
+		margin-top: 5px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+	}
+
+	input {
+		margin-left: 10px;
+		border-radius: 5px;
+		border-color: #fafafa;
+		border: none;
+		background-color: #e6e6e6;
+	}
+
+	.k-button {
+		width: 70px;
+		margin-left: 10px;
+		border-radius: 5px;
+		border-color: #fafafa;
+		border: none;
+		background-color: #325082;
+		color: white;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.k-grid-header-wrap {
+		background-color: white;
+	}
+
+	@@media screen and (max-height: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 55vh;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<h3>Master Privilege</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+	</div>
+</div>
+
+<script>
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+			o.dom.$grid.on('click', '#btnSave', o.eventHandlers.onClickBtnSave.bind(o));
+			o.dom.$grid.on('click', '.checkbox_read', o.eventHandlers.onClickCheckBoxRead);
+			o.dom.$grid.on('click', '.checkbox_add', o.eventHandlers.onClickCheckBoxAdd);
+			o.dom.$grid.on('click', '.checkbox_edit', o.eventHandlers.onClickCheckBoxEdit);
+			o.dom.$grid.on('click', '.checkbox_del', o.eventHandlers.onClickCheckBoxDel);
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+		},
+		data: {
+			UserGroup_Id: ''
+		},
+		dom: {},
+		eventHandlers: {
+			onClickBtnSave: function () {
+				var o = this;
+				swal.fire({
+					title: "Save?",
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						var data = o.fn.getData.call(o);
+
+						$.ajax({
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterPrivilege/INS',
+							dataType: 'text',
+							data: JSON.stringify(data)
+						}).done(function (data, textStatus, jqXHR) {
+							swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+							location.reload();
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+							console.log(jqXHR);
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			},
+			onClickCheckBoxRead: function (e) {
+				var $target = $(e.target);
+				if ($target.prop('checked')) $target.parent().addClass('read');
+				else $target.parent().removeClass('read');
+			},
+			onClickCheckBoxAdd: function (e) {
+				var $target = $(e.target);
+				if ($target.prop('checked')) $target.parent().addClass('add');
+				else $target.parent().removeClass('add');
+			},
+			onClickCheckBoxEdit: function (e) {
+				var $target = $(e.target);
+				if ($target.prop('checked')) $target.parent().addClass('edit');
+				else $target.parent().removeClass('edit');
+			},
+			onClickCheckBoxDel: function (e) {
+				var $target = $(e.target);
+				if ($target.prop('checked')) $target.parent().addClass('del');
+				else $target.parent().removeClass('del');
+			}
+		},
+		fn: {
+			getData: function () {
+				var o = this;
+				var data = {
+					UserGroup_Id: o.data.UserGroup_Id,
+					Privileges: []
+				};
+
+				o.dom.$grid.find('.k-grid-content tr').each(function (i, e) {
+					var di = o.dom.$grid.data('kendoGrid').dataItem(this);
+					var $row = $(this);
+					var row = {
+						Menu_Id: di.Menu_Id,
+						checkedbox_read: $row.find('.checkbox_read').prop('checked') ? '1' : '0',
+						checkedbox_add: $row.find('.checkbox_add').prop('checked') ? '1' : '0',
+						checkedbox_edit: $row.find('.checkbox_edit').prop('checked') ? '1' : '0',
+						checkedbox_del: $row.find('.checkbox_del').prop('checked') ? '1' : '0'
+					};
+
+					data.Privileges.push(row);
+				});
+
+				return data;
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterPrivilege/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserGroup_Id: o.data.UserGroup_Id
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal('Error', 'Error loading grid', 'error');
+									console.log(data);
+									options.success({ data: [] });
+									return;
+								}
+								console.log(result);
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								console.log(jqXHR);
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							id: "Menu_Id",
+							fields: {
+								Menu_Id: { type: "string" },
+								Menu_Group: { type: "string" },
+								Menu_Name: { type: "string" },
+								checkedbox_read: { type: "boolean" },
+								checkedbox_add: { type: "boolean" },
+								checkedbox_edit: { type: "boolean" },
+								checkedbox_del: { type: "boolean" }
+							}
+						}
+					}
+				},
+				scrollable: true,
+				sortable: false,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+				refresh: true,
+				columns: [
+				{
+					field: "Menu_Id",
+					title: "Menu_Id",
+					hidden: true,
+					width: 100
+				},
+				{
+					field: "Menu_Group",
+					title: "Menu Group",
+					sortAscending: "Sort (asc)",
+					width: 100
+				},
+				{
+					field: "Menu_Name",
+					title: "Menu Name",
+					sortAscending: "Sort (asc)",
+					width: 300
+				},
+				{
+					width: 80,
+					field: "checkedbox_read",
+					title: "Read",
+					template:'#if(data.Menu_Id!=="") { # <input type="checkbox" #: checkedbox_read ? "checked" : "" # class="checkbox checkbox_read"> #}#',
+				},
+				{
+					width: 80,
+					field: "checkedbox_add",
+					title: "Add",
+					template:'#if(data.Menu_Id!=="password"){ # <input type="checkbox" #: checkedbox_add ? "checked" : "" # class="checkbox checkbox_add"> #}#',
+				},
+				{
+					width: 80,
+					field: "checkedbox_edit",
+					title: "Edit",
+					template:'#if(data.Menu_Id!=="master_area"&&data.Menu_Id!=="master_box_type"&&data.Menu_Id!=="master_gate_group"&&data.Menu_Id!=="master_gate"&&data.Menu_Id!=="master_news"&&data.Menu_Id!=="master_shop"&&data.Menu_Id!=="master_transporter"){ # <input type="checkbox" #: checkedbox_edit ? "checked" : "" # class="checkbox checkbox_edit"> #}#',
+				},
+				{
+					width: 80,
+					field: "checkedbox_del",
+					title: "Delete",
+					template:'#if(data.Menu_Id!=="password"&&data.Menu_Id!=="master_user_priv"){ # <input type="checkbox" #: checkedbox_del ? "checked" : "" # class="checkbox checkbox_del"> #}#',
+				}],
+				toolbar: kendo.template($("#template_toolbar").html()),
+				dataBound: function (e) {
+					o.initAfter();
+					o.dom.$grid.find('.checkbox_read').filter(':checked').parent().addClass('read');
+					o.dom.$grid.find('.checkbox_add').filter(':checked').parent().addClass('add');
+					o.dom.$grid.find('.checkbox_edit').filter(':checked').parent().addClass('edit');
+					o.dom.$grid.find('.checkbox_del').filter(':checked').parent().addClass('del');
+				}
+			});
+		},
+		initAfter: function () {
+			var o = this;
+			if (o.initAfterCalled) return;
+			o.initAfterCalled = true;
+			o.dom.$UserGroupID = $("#usergroupid");
+			o.dom.$UserGroupID.css("width", "200px").kendoComboBox({
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserGroup_Id: "001"
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal('Error', 'Error loading combobox', 'error');
+									console.log(data);
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								console.log(jqXHR);
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							fields: {
+								UserGroup_Id: { type: "string" },
+								UserGroup: { type: "string" }
+							}
+						}
+					}
+				},
+				placeholder: "User Group...",
+				dataTextField: "UserGroup",
+				dataValueField: "UserGroup_Id",
+				filter: 'contains',
+				change: function (e) {
+					if (this.value() && this.selectedIndex == -1) {
+						this._filterSource({
+							value: this.value(),
+							field: this.options.dataTextField,
+							operator: "contains"
+						});
+						this.select(0);
+						if (this.selectedIndex == -1) {
+							this.text("");
+							this.value("");
+						}
+					}
+					o.data.UserGroup_Id = this.value();
+					o.dom.$grid.data('kendoGrid').dataSource.read();
+				}
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+		<input type="text" name="usergroupid" id="usergroupid" value="" placeholder = "search">
+		<button class="k-button" id="btnSave" type="button">Save</button>
+	</div>
+</script>

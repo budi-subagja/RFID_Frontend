@@ -1,0 +1,44 @@
+﻿@{
+	Layout = null;
+}
+
+@model RFIDP2P3_Web.Models.User
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login - RFID P2P3</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/style.css" />
+	<link rel="icon" href="~/img/icon.png" />
+</head>
+<body class="login">
+	<div class="flex">
+		<div class="bg-banner-login">
+			<div class="block-login"></div>
+		</div>
+		<div class="bg-form-login">
+			<img src="~/img/RFID-Logo.wine.png" class="logo-login" />
+			<form class="form-login" method="POST">
+				<div class="heightspace"></div>
+				<input type="text" id="username" name="username" placeholder="username" required />
+				<br>
+				<input type="password" id="password" name="password" placeholder="password" required />
+				<div class="red">
+					@ViewBag.Message
+					@ViewBag.IncorrectMessage
+				</div>
+				<div class="heightspace"></div>
+				<input class="submit" type="submit" value="LOGIN" asp-controller="Login" />
+			</form>
+			<br>
+			<div class="copyright">&copy; 2022 - PT Astra Daihatsu Motor</div>
+			<div class="version">Version 1.0.0</div>
+		</div>
+	</div>
+</body>
+</html>

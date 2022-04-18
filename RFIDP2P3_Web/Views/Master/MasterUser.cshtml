@@ -1,0 +1,513 @@
+﻿@{
+	ViewData["Title"] = "Master User";
+}
+
+<style>
+	.flex {
+		display: flex;
+	}
+
+	.k-grid-footer {
+		display: none;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+		font-size: 13px;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.k-grid-content {
+		height: 55vh;
+	}
+
+	.btn {
+		background-color: #325082;
+		color: white;
+	}
+
+	.green {
+		background-color: #1D6F42 !important;
+		color: white;
+	}
+
+	.spacew {
+		width: 10px;
+	}
+
+	/* The Modal (background) */
+	#myModal {
+		display: none;
+		/* Hidden by default */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+		background-color: #fefefe;
+		position: absolute;
+		float: left;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		width: 50%;
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	.modal-footer {
+		justify-content: flex-start;
+	}
+
+	hr {
+		background-color: #aaaaaa !important;
+	}
+
+	@@media screen and (max-width: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 45vh;
+		}
+
+		.modal-content {
+			width: 70%;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<h3>Master User</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="" role="document">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Add New User</h4>
+					</div>
+					<div class="modal-body">
+						<div class="panel">
+							<div class="panel-body">
+								<form class="form-vertical">
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-3 control-label">User ID</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="User_Id" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-3 control-label">Name</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="Name" required maxlength="50">
+											</div>
+										</div>
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-3 control-label">Email</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="Email" maxlength="50">
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-6 control-label">Supplier Code</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="Supplier_Code" maxlength="50">
+											</div>
+										</div>
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-6 control-label">Supplier Name</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="Supplier_Name" maxlength="150">
+											</div>
+										</div>
+									</div>
+									<div class="form-group form-material col-md-6">
+										<label class="col-sm-6 control-label">Shop Code</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" id="Shop_Code" maxlength="150">
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+						<button type="button" class="btn btn-primary" id="btnSave">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+			o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
+
+			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
+			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+
+			o.dom.$grid.on('click', '.btnUpdate', o.eventHandlers.onClickBtnUpdate.bind(o));
+			o.dom.$grid.on('click', '.btnDelete', o.eventHandlers.onClickBtnDelete.bind(o));
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+			o.dom.inputs = {};
+			o.dom.inputs.$inputUserID = $("#User_Id");
+			o.dom.inputs.$inputName = $("#Name");
+			o.dom.inputs.$inputEmail = $("#Email");
+			o.dom.inputs.$inputSupplierCode = $("#Supplier_Code");
+			o.dom.inputs.$inputShopCode = $("#Shop_code");
+			o.dom.$btnSave = $("#btnSave");
+		},
+		data: {},
+		dom: {},
+		eventHandlers: {
+			onClickBtnCreate: function () {
+				var o = this;
+				o.dom.inputs.$inputUserID.val('');
+				o.dom.inputs.$inputName.val('');
+				o.dom.inputs.$inputEmail.val('');
+				o.dom.inputs.$inputSupplierCode.val('');
+				o.dom.inputs.$inputShopCode.val('');
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+			onClickBtnDelete: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				swal.fire({
+					title: 'Delete?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterUserGroup/DEL',
+							dataType: 'text',
+							data: JSON.stringify({
+								PIC_ID: di.PIC_ID,
+								UserLogin: "admin"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('', data, 'error');
+								console.log(jqXHR);
+								return;
+							}
+							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							alert(jqXHR.responseText);
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+							console.log(jqXHR);
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			},
+			onClickBtnExcel: function () {
+				var o = this;
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			},
+			onClickBtnSave: function () {
+				var o = this;
+				var User_Id = o.dom.inputs.$inputUserID.val();
+				var Name = o.dom.inputs.$inputName.val();
+				var Email = o.dom.inputs.$inputEmail.val();
+				var SupplierCode = o.dom.inputs.$inputSupplierCode.val();
+				var Shopcode = o.dom.inputs.$inputShopCode.val();
+
+				if (User_Id !== "") {
+					swal.fire({
+						title: "Save?",
+						icon: 'question',
+						showCancelButton: true,
+						confirmButtonText: 'Yes'
+					}).then((result) => {
+						if (result.isConfirmed) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUser/INS',
+								dataType: 'text',
+								data: JSON.stringify({
+									User_Id: User_Id,
+									Name: Name,
+									Email: Email,
+									SupplierCode: SupplierCode,
+									SupplierName: SupplierName,
+									Shopcode: Shopcode,
+									UserLogin: 'admin'
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								if (data !== 'success') {
+									swal('Error', data, 'error');
+									console.log(jqXHR);
+									return;
+								}
+								var modal = document.getElementById("myModal");
+								modal.style.display = "none";
+								swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								console.log(jqXHR);
+							}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+								o.dom.$grid.data('kendoGrid').dataSource.read();
+							});
+						}
+					});
+				} else {
+					swal.fire('', "User Group is mandatory!", 'error');
+				}
+			},
+			onClickBtnUpdate: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				o.dom.inputs.$inputUserID.val(di.PIC_ID);
+				o.dom.inputs.$inputName.val(di.PIC_Name);
+				o.dom.inputs.$inputEmail.val(di.Email);
+				o.dom.inputs.$inputSupplierCode.val(di.Supplier_Code);
+				o.dom.inputs.$inputSupplierCode.val(di.Supplier_Name);
+				o.dom.inputs.$inputShopCode.val(di.Shop_Code);
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				excel: {
+					fileName: "Master User.xlsx",
+					allPages: true,
+					filterable: true
+				},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUser/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserLogin: 'admin'
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							id: "PIC_ID",
+							fields: {
+								PIC_ID: { type: "string" },
+								PIC_Name: { type: "string" },
+								Dock_Area: { type: "string" },
+								Shop_Code: { type: "string" },
+								UserGroup: { type: "string" },
+								Supplier_Code: { type: "string" },
+								Supplier_Name: { type: "string" },
+								Email: { type: "string" }
+							}
+						}
+					},
+					pageSize: 20
+				},
+				scrollable: true,
+				sortable: true,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+				pageable: {
+					refresh: true,
+					input: true,
+					numeric: true,
+					pageSizes: true,
+					buttonCount: 5
+				},
+				columns: [
+				{
+					width: 60,
+					command: [{
+						name: "Update",
+						text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+					}]
+				},
+				{
+					width: 60,
+					command: [{
+						name: "Delete",
+						text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+					}]
+				},
+				{
+					field: "PIC_ID",
+					title: "ID",
+					width: 100
+				},
+				{
+					field: "PIC_Name",
+					title: "Name",
+					width: 200
+				},
+				{
+					field: "Dock_Area",
+					title: "Dock Area",
+					width: 200
+				},
+				{
+					field: "Shop_Code",
+					title: "Shop Code",
+					width: 100
+				},
+				{
+					field: "UserGroup",
+					title: "User Group",
+					width: 100
+				},
+				{
+					field: "Supplier_Code",
+					title: "Supplier Code",
+					width: 150
+				},
+				{
+					field: "Supplier_Name",
+					title: "Supplier Name",
+					width: 250
+				},
+				{
+					field: "Email",
+					title: "Email",
+					width: 200
+				}],
+				toolbar: $("#template_toolbar").html(),
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+		<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+			<i class="k-icon k-i-plus"></i> Add New
+		</button>
+		<div class = "spacew"></div>
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+			<i class="k-icon k-i-excel"></i> Save As Exel
+		</button>
+	</div>
+</script>

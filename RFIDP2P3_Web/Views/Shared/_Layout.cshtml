@@ -1,0 +1,464 @@
+﻿@functions {
+	public string getClass(string ctr, string act)
+	{
+		var ctrName = ViewContext.RouteData.Values["controller"]?.ToString();
+		var actName = ViewContext.RouteData.Values["action"]?.ToString();
+		if (ctrName == ctr && actName == act) return "active";
+		else return "";
+	}
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>@ViewData["Title"] - RFID P2P3</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+
+	<link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
+	<link rel="stylesheet" href="~/lib/fontawesome/css/v4-shims.css" />
+	
+	<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/lib/bootstrap/js/bootstrap.bundle.min.js" />
+
+	<link rel="stylesheet" href="~/lib/KendoUI/styles/kendo.common.min.css" />
+	<link rel="stylesheet" href="~/lib/KendoUI/styles/kendo.default.min.css" />
+	<script src="~/lib/KendoUI/js/kendo.all.min.js"></script>
+
+	<script src="~/lib/jszip/jszip.min.js"></script>
+
+	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
+	<link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css" />
+	
+	<link rel="stylesheet" href="~/css/Material-Icons.css" />
+	<link rel="icon" href="~/img/icon.png" />
+</head>
+
+<body>
+	<div id="base">
+		<div id="content">
+			@RenderBody()
+		</div>
+		<div class="banner"></div>
+		<div id="mySidebar" class="sidebar">
+			<button class="collapsible">
+				<i class="material-icons">
+					<img src="~/img/icon.png" width="25px" height="25px" />
+				</i>
+				<span class="icon-text"><b>@ViewBag.Username</b></span>
+			</button>
+			<div class="contentz">
+				<div class="rounded">
+					<a asp-controller="Tools" asp-action="Index">
+						<span class="icon-text">&nbsp;Security</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a class="red" asp-controller="Login" asp-action="Index">
+						<span class="icon-text">&nbsp;Log Out</span>
+					</a>
+				</div>
+			</div>
+
+			<div class="padding">
+				<hr>
+			</div>
+
+			<div class="rounded-full">
+				<a asp-controller="Home" asp-action="Index" class="@getClass("Home", "Index")">
+					<i class="material-icons">cottage</i>
+					<span class="icon-text"><b>Home</b></span>
+				</a>
+			</div>
+
+			<button onclick="darkMode()">
+				<i class="material-icons">light_mode</i>
+				<span class="icon-text"><b>Theme</b></span>
+			</button>
+
+			<div class="padding">
+				<hr>
+			</div>
+
+			<button class="collapsible">
+				<i class="material-icons">ballot</i>
+				<span class="icon-text"><b>Master</b></span>
+			</button>
+			<div class="contentz">
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterUserGroup" class="@getClass("Master", "MasterUserGroup")">
+						<span class="icon-text">&nbsp;Master User Group</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterPrivilege" class="@getClass("Master", "MasterPrivilege")">
+						<span class="icon-text">&nbsp;Master Privilege</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
+						<span class="icon-text">&nbsp;Master User</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
+						<span class="icon-text">&nbsp;Master Shop</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterGateGroup" class="@getClass("Master", "MasterGateGroup")">
+						<span class="icon-text">&nbsp;Master Gate Group</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
+						<span class="icon-text">&nbsp;Master Gate</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
+						<span class="icon-text">&nbsp;Master Area</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterSupplier" class="@getClass("Master", "MasterSupplier")">
+						<span class="icon-text">&nbsp;Master Supplier</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
+						<span class="icon-text">&nbsp;Master Box Type</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
+						<span class="icon-text">&nbsp;Master RFID</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterTransporter" class="@getClass("Master", "MasterTransporter")">
+						<span class="icon-text">&nbsp;Master Transporter</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
+						<span class="icon-text">&nbsp;Master News</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+
+<script>
+	//sidebar
+	document.getElementById("mySidebar").addEventListener("mouseover", function () {
+		document.getElementById("mySidebar").style.width = "250px";
+		document.getElementById("content").style.marginLeft = "250px";
+	});
+	document.getElementById("mySidebar").addEventListener("mouseout", function () {
+		document.getElementById("mySidebar").style.width = "85px";
+		document.getElementById("content").style.marginLeft = "85px";
+	});
+
+	//colapse
+	var coll = document.getElementsByClassName("collapsible");
+	var i;
+
+	for (i = 0; i < coll.length; i++) {
+		coll[i].addEventListener("click", function () {
+			this.classList.toggle("active");
+			var content = this.nextElementSibling;
+			if (content.style.display === "block") {
+				content.style.display = "none";
+			} else {
+				content.style.display = "block";
+			}
+		});
+	}
+
+	const theme = window.localStorage.getItem("theme");
+
+	if (theme === "dark") {
+		var element = document.body;
+		element.classList.toggle("dark-mode");
+
+		var side = document.getElementById("mySidebar");
+		side.classList.toggle("dark-mode-side");
+	}
+
+	function darkMode() {
+		if (theme === "dark") {
+			window.localStorage.setItem("theme", "light");
+			var element = document.body;
+			element.classList.toggle("dark-mode");
+			var side = document.getElementById("mySidebar");
+			side.classList.toggle("dark-mode-side");
+		} else {
+			window.localStorage.setItem("theme", "dark");
+			var element = document.body;
+			element.classList.toggle("dark-mode");
+
+			var side = document.getElementById("mySidebar");
+			side.classList.toggle("dark-mode-side");
+		}
+	}
+</script>
+
+<style>
+	body {
+		background-color: #F0F2F5;
+	}
+
+	.banner {
+		width: 100%;
+		height: 100px;
+		background-image: url("../../img/bannertwo.jpg");
+		position: absolute;
+		top: 0;
+		background-position: center;
+		/* Center the image */
+		background-repeat: no-repeat;
+		/* Do not repeat the image */
+		background-size: cover;
+		/* Resize the background image to cover the entire container */
+	}
+
+	.sidebar {
+		width: 85px;
+		position: fixed;
+		z-index: 99;
+		top: 30px;
+		left: 20px;
+		bottom: 30px;
+		background-color: #fff;
+		transition: 0.5s;
+		overflow-x: hidden;
+		padding-top: 60px;
+		white-space: nowrap;
+		-moz-box-shadow: -3px 0 7px 0 #555;
+		-webkit-box-shadow: -3px 0 7px 0 #555;
+		box-shadow: -0px 0 7px 0 #555;
+		border-radius: 20px;
+	}
+
+	.sidebar button {
+		padding: 8px 8px 8px 32px;
+		text-decoration: none;
+		font-size: 16px;
+		color: #111;
+		display: block;
+		background-color: #fff;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+		border: none;
+	}
+
+	.sidebar a {
+		padding: 8px 8px 8px 32px;
+		text-decoration: none;
+		font-size: 16px;
+		color: #111;
+		display: block;
+	}
+
+	main .sidebar {
+		position: absolute;
+		top: 0;
+		right: 25px;
+		font-size: 36px;
+		margin-left: 50px;
+	}
+
+	.material-icons,
+	.icon-text {
+		vertical-align: middle;
+	}
+
+	.material-icons {
+		padding-bottom: 3px;
+		margin-right: 30px;
+		color: #111;
+	}
+
+	.contentz {
+		padding: 0 55px;
+		display: none;
+		overflow: hidden;
+		transition: 0.5s;
+	}
+
+	footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+
+	.padding {
+		padding: 8px 16px;
+	}
+
+	.rounded:hover {
+		background-color: #e6e6e6;
+		width: fit-content !important;
+		padding-right: 10px;
+	}
+
+	.rounded-full:hover {
+		background-color: #e6e6e6;
+	}
+
+	img {
+		border-radius: 5px;
+	}
+
+	.black {
+		color: black !important;
+	}
+
+	.red {
+		color: red !important;
+	}
+
+	.space {
+		height: 50px;
+	}
+
+	.badge {
+		background-color: #e6e6e6;
+		border-radius: 20%;
+		height: fit-content;
+		padding-right: 10px;
+	}
+
+	span {
+		margin-left: auto;
+		margin-top: 10px;
+	}
+
+	.toggle {
+		margin-left: auto;
+	}
+
+	.arrow {
+		margin-left: auto;
+		padding-right: 10px;
+	}
+
+	.grey {
+		color: #757575 !important;
+	}
+
+	.swal2-popup {
+		font-size: 1rem !important;
+	}
+
+	.block {
+		display: block;
+		margin-left: 5px;
+	}
+
+	.btn-red {
+		background-color: red;
+	}
+
+	#content {
+		padding: 16px;
+		margin-left: 85px;
+		transition: margin-left 0.5s;
+	}
+
+	body::-webkit-scrollbar {
+		width: 0.4em;
+	}
+
+	body::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	}
+
+	body::-webkit-scrollbar-thumb {
+		background-color: darkgrey;
+		outline: 1px solid slategrey;
+	}
+
+	.sidebar::-webkit-scrollbar {
+		width: 0.0em;
+	}
+
+	.sidebar::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	}
+
+	.sidebar::-webkit-scrollbar-thumb {
+		background-color: darkgrey;
+		outline: 1px solid slategrey;
+	}
+
+	.dark-mode {
+		background-color: #202124;
+		color: white;
+	}
+
+	.dark-mode .grey {
+		color: white !important;
+	}
+
+	.dark-mode-side {
+		background-color: #171717;
+		color: white;
+	}
+
+	.dark-mode a {
+		color: white;
+	}
+
+	.dark-mode i {
+		color: white;
+	}
+
+	.dark-mode a:hover {
+		color: black !important;
+	}
+
+	.dark-mode button {
+		background-color: #171717;
+		color: white;
+	}
+
+	.k-grid-toolbar{
+		background-color: #F0F2F5;
+	}
+
+	hr{
+		filter: opacity(50%);
+	}
+
+	@@media screen and (max-height: 1400px) {
+		.banner {
+			height: 70px;
+		}
+	}
+
+	@@media screen and (max-height: 450px) {
+		.sidebar {
+			padding-top: 15px;
+			height: 100%;
+			top: 0;
+			left: 0;
+			bottom: 0;
+		}
+
+		.sidebar a {
+			font-size: 18px;
+		}
+	}
+</style>
+
+</html>

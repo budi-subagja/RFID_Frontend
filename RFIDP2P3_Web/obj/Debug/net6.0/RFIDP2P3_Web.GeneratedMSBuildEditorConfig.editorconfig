@@ -1,0 +1,88 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = RFIDP2P3_Web
+build_property.RootNamespace = RFIDP2P3_Web
+build_property.ProjectDir = C:\webproject\RFIDP2P3\RFIDP2P3_Web\RFIDP2P3_Web\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\webproject\RFIDP2P3\RFIDP2P3_Web\RFIDP2P3_Web
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterArea.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlckFyZWEuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterBoxType.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlckJveFR5cGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterGate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlckdhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterGateGroup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlckdhdGVHcm91cC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterNews.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3Rlck5ld3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterPrivilege.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclByaXZpbGVnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterRFID.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclJGSUQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterShop.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclNob3AuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterSupplier.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclN1cHBsaWVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterTransporter.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclRyYW5zcG9ydGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclVzZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Master/MasterUserGroup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFzdGVyXE1hc3RlclVzZXJHcm91cC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/webproject/RFIDP2P3/RFIDP2P3_Web/RFIDP2P3_Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-a5f95w98bv
