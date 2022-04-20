@@ -205,7 +205,7 @@
 									var result = JSON.parse(data);
 								}
 								catch (e) {
-									swal('Error', 'Error loading grid', 'error');
+									swal.fire('Error', 'Error loading grid', 'error');
 									console.log(data);
 									options.success({ data: [] });
 									return;
@@ -213,7 +213,7 @@
 								console.log(result);
 								options.success(result);
 							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
 								console.log(jqXHR);
 								options.success({ data: [] });
 							});
@@ -324,14 +324,14 @@
 									var result = JSON.parse(data);
 								}
 								catch (e) {
-									swal('Error', 'Error loading combobox', 'error');
+									swal.fire('Error', 'Error loading combobox', 'error');
 									console.log(data);
 									options.success({ data: [] });
 									return;
 								}
 								options.success(result);
 							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
 								console.log(jqXHR);
 								options.success({ data: [] });
 							});

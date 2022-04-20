@@ -95,10 +95,6 @@
         cursor: pointer;
     }
 
-    .modal-footer {
-        justify-content: flex-start;
-    }
-
     hr {
         background-color: #aaaaaa !important;
     }
@@ -111,7 +107,6 @@
         .k-grid-content {
             height: 45vh;
         }
-
     }
 </style>
 
@@ -131,28 +126,29 @@
                     <div class="modal-body">
                         <div class="panel">
                             <div class="panel-body">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" id="submitMasterArea">
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Area Code</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Area Code</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="Area_Code" required />
                                             </div>
                                         </div>
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Area Name</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Area Name</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="Area_Name" required />
                                             </div>
                                         </div>
                                     </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+                                    </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="btnSave">Submit</button>
                     </div>
                 </div>
             </div>
@@ -164,7 +160,6 @@
     var AppD = {
         attachEvents: function () {
             var o = this;
-            o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
 
             o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
             o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
@@ -177,7 +172,6 @@
             o.dom.inputs = {};
             o.dom.inputs.$inputAreaCode = $("#Area_Code");
             o.dom.inputs.$inputAreaName = $("#Area_Name");
-            o.dom.$btnSave = $("#btnSave");
         },
         data: {},
         dom: {},
@@ -222,14 +216,11 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (data !== 'success') {
                                 swal.fire('', data, 'error');
-                                console.log(jqXHR);
                                 return;
                             }
                             swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            alert(jqXHR.responseText);
                             swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                            console.log(jqXHR);
                         }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
                             o.dom.$grid.data('kendoGrid').dataSource.read();
                         });
@@ -239,68 +230,6 @@
             onClickBtnExcel: function () {
                 var o = this;
                 o.dom.$grid.data('kendoGrid').saveAsExcel();
-            },
-            onClickBtnSave: function () {
-                var o = this;
-                var Area_Code = o.dom.inputs.$inputAreaCode.val();
-                var Area_Name = o.dom.inputs.$inputAreaName.val();
-
-                if (Area_Code !== "" && Area_Name !== "") {
-                    swal.fire({
-                        title: "Save?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                method: 'post',
-                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                                url: 'https://localhost:7072/api/MasterArea/INS',
-                                dataType: 'text',
-                                data: JSON.stringify({
-                                    Area_Code: Area_Code,
-                                    Area_Name: Area_Name,
-                                    UserLogin: 'admin'
-                                })
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (data !== 'success') {
-                                    swal('Error', data, 'error');
-                                    console.log(jqXHR);
-                                    return;
-                                }
-                                var modal = document.getElementById("myModal");
-                                modal.style.display = "none";
-                                swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
-                            }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
-                                o.dom.$grid.data('kendoGrid').dataSource.read();
-                            });
-                        }
-                    });
-                } else {
-                    swal.fire('', "Please fill all fields!", 'error');
-                }
-            },
-            onClickBtnUpdate: function (e) {
-                var o = this;
-                var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
-                o.dom.inputs.$inputAreaCode.val(di.Area_Code);
-                o.dom.inputs.$inputAreaName.val(di.Area_Name);
-
-                var modal = document.getElementById("myModal");
-                modal.style.display = "block";
-                window.onclick = function (event) {
-                    if (event.target == modal) {
-                        modal.style.display = "none";
-                    }
-                }
-                var cancel = document.getElementById("btnCancel");
-                cancel.onclick = function () {
-                    modal.style.display = "none";
-                }
             }
         },
         init: function () {
@@ -330,18 +259,15 @@
                             }).done(function (data, textStatus, jqXHR) {
                                 try {
                                     var result = JSON.parse(data);
-                                    console.log(result);
                                 }
                                 catch (e) {
                                     swal.fire('Error', 'Error loading grid', 'error');
-                                    console.log(data);
                                     options.success({ data: [] });
                                     return;
                                 }
                                 options.success(result);
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
                                 options.success({ data: [] });
                             });
                         }
@@ -383,7 +309,6 @@
                     width: 50,
                     command: [{
                         name: "Delete",
-
                         text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
                     }]
                 },
@@ -398,6 +323,46 @@
                     width: 240
                 }],
                 toolbar: $("#template_toolbar").html(),
+            });
+    
+            $("#submitMasterArea").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var Area_Code = document.getElementById("Area_Code").value;
+                var Area_Name = document.getElementById("Area_Name").value;
+
+                swal.fire({
+                    title: "Save?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterArea/INS',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                Area_Code: Area_Code,
+                                Area_Name: Area_Name,
+                                UserLogin: "admin"
+                            })
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (data !== 'success') {
+                                swal.fire('Error', data, 'error');
+                                return;
+                            }
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "none";
+                            swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        });
+                    }
+                });
             });
         }
     };

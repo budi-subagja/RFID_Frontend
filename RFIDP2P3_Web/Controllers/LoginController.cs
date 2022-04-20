@@ -46,7 +46,7 @@ namespace RFIDP2P3_Web.Controllers
                     }
                     else if (apiResponse == "Incorrect login/password")
                     {
-                        ViewBag.IncorrectMessage = "Incorrect login/password";
+                        ViewBag.Message = "Incorrect login/password";
                         return View();
                     }
                     else

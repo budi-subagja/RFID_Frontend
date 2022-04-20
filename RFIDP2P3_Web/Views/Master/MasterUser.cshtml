@@ -95,10 +95,6 @@
 		cursor: pointer;
 	}
 
-	.modal-footer {
-		justify-content: flex-start;
-	}
-
 	hr {
 		background-color: #aaaaaa !important;
 	}
@@ -134,56 +130,57 @@
 					<div class="modal-body">
 						<div class="panel">
 							<div class="panel-body">
-								<form class="form-vertical">
+								<form class="form-horizontal" id="submitMasterUser">
 									<div class="flex">
 										<div class="form-group form-material col-md-6">
-											<label class="col-sm-3 control-label">User ID</label>
-											<div class="col-sm-9">
+											<label class="col-sm-10 control-label">User ID</label>
+											<div class="col-sm-10">
 												<input type="text" class="form-control" id="User_Id" required />
 											</div>
 										</div>
-									</div>
-									<div class="flex">
 										<div class="form-group form-material col-md-6">
-											<label class="col-sm-3 control-label">Name</label>
-											<div class="col-sm-9">
-												<input type="text" class="form-control" id="Name" required maxlength="50">
-											</div>
-										</div>
-										<div class="form-group form-material col-md-6">
-											<label class="col-sm-3 control-label">Email</label>
-											<div class="col-sm-9">
-												<input type="text" class="form-control" id="Email" maxlength="50">
+											<label class="col-sm-10 control-label">Name</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="Name" required />
 											</div>
 										</div>
 									</div>
 									<div class="flex">
 										<div class="form-group form-material col-md-6">
-											<label class="col-sm-6 control-label">Supplier Code</label>
-											<div class="col-sm-9">
-												<input type="text" class="form-control" id="Supplier_Code" maxlength="50">
+											<label class="col-sm-10 control-label">Email</label>
+											<div class="col-sm-10">
+												<input type="email" class="form-control" id="Email" pattern="^[a-zA-Z0-9._+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,9}$" required />
 											</div>
 										</div>
 										<div class="form-group form-material col-md-6">
-											<label class="col-sm-6 control-label">Supplier Name</label>
-											<div class="col-sm-9">
-												<input type="text" class="form-control" id="Supplier_Name" maxlength="150">
+											<label class="col-sm-10 control-label">Password</label>
+											<div class="col-sm-10">
+												<input type="password" class="form-control" id="Password" />
 											</div>
 										</div>
 									</div>
-									<div class="form-group form-material col-md-6">
-										<label class="col-sm-6 control-label">Shop Code</label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control" id="Shop_Code" maxlength="150">
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">User Group</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="UserGroup_Id" required />
+											</div>
 										</div>
+										<div class="form-group form-material col-md-6" id="supp">
+											<label class="col-sm-10 control-label">Supplier</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="Supplier" />
+											</div>
+										</div>
+									</div>
+									<br />
+									<div>
+										<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+										<input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
 									</div>
 								</form>
 							</div>
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-						<button type="button" class="btn btn-primary" id="btnSave">Submit</button>
 					</div>
 				</div>
 			</div>
@@ -195,7 +192,6 @@
 	var AppD = {
 		attachEvents: function () {
 			var o = this;
-			o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
 
 			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
 			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
@@ -210,9 +206,9 @@
 			o.dom.inputs.$inputUserID = $("#User_Id");
 			o.dom.inputs.$inputName = $("#Name");
 			o.dom.inputs.$inputEmail = $("#Email");
-			o.dom.inputs.$inputSupplierCode = $("#Supplier_Code");
-			o.dom.inputs.$inputShopCode = $("#Shop_code");
-			o.dom.$btnSave = $("#btnSave");
+			o.dom.inputs.$inputPassword = $("#Password");
+			o.dom.inputs.$inputUserGroup = $("#UserGroup_Id");
+			o.dom.inputs.$inputSupplier = $("#Supplier");
 		},
 		data: {},
 		dom: {},
@@ -222,8 +218,14 @@
 				o.dom.inputs.$inputUserID.val('');
 				o.dom.inputs.$inputName.val('');
 				o.dom.inputs.$inputEmail.val('');
-				o.dom.inputs.$inputSupplierCode.val('');
-				o.dom.inputs.$inputShopCode.val('');
+				o.dom.inputs.$inputPassword.val('');
+				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value('');
+				o.dom.inputs.$inputSupplier.data("kendoDropDownList").value('');
+
+                document.getElementById("User_Id").disabled = false;
+				$("#Password").attr("placeholder", "");
+				$("#Password").prop("required", true);
+				$("#supp").hide();
 
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
@@ -261,14 +263,11 @@
 						}).done(function (data, textStatus, jqXHR) {
 							if (data !== 'success') {
 								swal.fire('', data, 'error');
-								console.log(jqXHR);
 								return;
 							}
 							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
 						}).fail(function (jqXHR, textStatus, errorThrown) {
-							alert(jqXHR.responseText);
 							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-							console.log(jqXHR);
 						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
 							o.dom.$grid.data('kendoGrid').dataSource.read();
 						});
@@ -279,57 +278,6 @@
 				var o = this;
 				o.dom.$grid.data('kendoGrid').saveAsExcel();
 			},
-			onClickBtnSave: function () {
-				var o = this;
-				var User_Id = o.dom.inputs.$inputUserID.val();
-				var Name = o.dom.inputs.$inputName.val();
-				var Email = o.dom.inputs.$inputEmail.val();
-				var SupplierCode = o.dom.inputs.$inputSupplierCode.val();
-				var Shopcode = o.dom.inputs.$inputShopCode.val();
-
-				if (User_Id !== "") {
-					swal.fire({
-						title: "Save?",
-						icon: 'question',
-						showCancelButton: true,
-						confirmButtonText: 'Yes'
-					}).then((result) => {
-						if (result.isConfirmed) {
-							$.ajax({
-								method: 'post',
-								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterUser/INS',
-								dataType: 'text',
-								data: JSON.stringify({
-									User_Id: User_Id,
-									Name: Name,
-									Email: Email,
-									SupplierCode: SupplierCode,
-									SupplierName: SupplierName,
-									Shopcode: Shopcode,
-									UserLogin: 'admin'
-								})
-							}).done(function (data, textStatus, jqXHR) {
-								if (data !== 'success') {
-									swal('Error', data, 'error');
-									console.log(jqXHR);
-									return;
-								}
-								var modal = document.getElementById("myModal");
-								modal.style.display = "none";
-								swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
-							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								console.log(jqXHR);
-							}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
-								o.dom.$grid.data('kendoGrid').dataSource.read();
-							});
-						}
-					});
-				} else {
-					swal.fire('', "User Group is mandatory!", 'error');
-				}
-			},
 			onClickBtnUpdate: function (e) {
 				var o = this;
 				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
@@ -337,9 +285,16 @@
 				o.dom.inputs.$inputUserID.val(di.PIC_ID);
 				o.dom.inputs.$inputName.val(di.PIC_Name);
 				o.dom.inputs.$inputEmail.val(di.Email);
-				o.dom.inputs.$inputSupplierCode.val(di.Supplier_Code);
-				o.dom.inputs.$inputSupplierCode.val(di.Supplier_Name);
-				o.dom.inputs.$inputShopCode.val(di.Shop_Code);
+				o.dom.inputs.$inputPassword.val('');
+				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value(di.UserGroup_Id);
+				o.dom.inputs.$inputSupplier.data("kendoDropDownList").value((di.Supplier_Code).trim());
+
+                document.getElementById("User_Id").disabled = false;
+				$("#Password").attr("placeholder", "Leave this blank to keep password");
+				$("#Password").prop("required", false);
+
+				if(di.UserGroup_Id == "003") $("#supp").show();
+				else $("#supp").hide();
 
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
@@ -392,7 +347,6 @@
 								options.success(result);
 							}).fail(function (jqXHR, textStatus, errorThrown) {
 								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-
 								options.success({ data: [] });
 							});
 						}
@@ -405,6 +359,7 @@
 								PIC_Name: { type: "string" },
 								Dock_Area: { type: "string" },
 								Shop_Code: { type: "string" },
+								UserGroup_Id: { type: "string" },
 								UserGroup: { type: "string" },
 								Supplier_Code: { type: "string" },
 								Supplier_Name: { type: "string" },
@@ -471,6 +426,12 @@
 					width: 100
 				},
 				{
+					field: "UserGroup_Id",
+					title: "User Group ID",
+					width: 100,
+					hidden: true
+				},
+				{
 					field: "UserGroup",
 					title: "User Group",
 					width: 100
@@ -491,6 +452,134 @@
 					width: 200
 				}],
 				toolbar: $("#template_toolbar").html(),
+			});
+			
+			$("#UserGroup_Id").kendoDropDownList({
+				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
+                optionLabel: "select user group...",
+				dataValueField: "UserGroup_Id",
+				change : function (e) {
+					if(this.value() == "003"){
+						$("#supp").show();
+						$("#Supplier").prop("required", true);
+					} else {
+						$("#supp").hide();
+						$("#Supplier").prop("required", false);
+					}
+
+					$("#Supplier").data("kendoDropDownList").value("");
+				},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
+								dataType: 'text',
+								data: JSON.stringify({ UserGroup_Id: "001" })
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					}
+				}
+			}).data("kendoDropDownList");
+
+			$("#Supplier").kendoDropDownList({
+				template: '<span>#:data.Supplier_Code# - #:data.Supplier_Name#</span>',
+				valueTemplate: '<span>#:data.Supplier_Code# - #:data.Supplier_Name#</span>',
+				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Supplier found',
+				dataValueField: "Supplier_Code",
+                optionLabel: "select supplier...",
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterSupplier/INQ',
+								dataType: 'text',
+								data: {}
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					}
+				}
+			}).data("kendoDropDownList");
+
+			
+			$("#submitMasterUser").submit(function (e) {
+				e.preventDefault(); // avoid to execute the actual submit of the form.
+				
+				var UID = document.getElementById("User_Id").value;
+				var Password = document.getElementById("Password").value;
+				var Name = document.getElementById("Name").value;
+				var Email = document.getElementById("Email").value;
+				var UserGroup = document.getElementById("UserGroup_Id").value;
+				var Supplier = document.getElementById("Supplier").value;
+
+				swal.fire({
+					title: "Save?",
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterUser/INS',
+							dataType: 'text',
+							data: JSON.stringify({
+								PIC_ID: UID,
+								PIC_Name: Name,
+								Email: Email,
+								password: Password,
+								UserGroup_Id: UserGroup,
+								Supplier_Code: Supplier,
+								UserLogin: 'admin'
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('Error', data, 'error');
+								return;
+							}
+							var modal = document.getElementById("myModal");
+							modal.style.display = "none";
+							swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
 			});
 		}
 	};

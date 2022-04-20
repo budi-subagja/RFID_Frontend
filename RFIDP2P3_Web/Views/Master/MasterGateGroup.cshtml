@@ -95,10 +95,6 @@
         cursor: pointer;
     }
 
-    .modal-footer {
-        justify-content: flex-start;
-    }
-
     hr {
         background-color: #aaaaaa !important;
     }
@@ -111,7 +107,6 @@
         .k-grid-content {
             height: 45vh;
         }
-
     }
 </style>
 
@@ -132,28 +127,29 @@
                     <div class="modal-body">
                         <div class="panel">
                             <div class="panel-body">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" id="submitMasterGateGroup">
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Gate Group</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Gate Group</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="Gate_Group" required />
                                             </div>
                                         </div>
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Shop Code</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="Shop_Code" required />
+                                            <label class="col-sm-10 control-label">Shop Code</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" id="Shop_Code" required />
                                             </div>
                                         </div>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
                                     </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="btnSave">Submit</button>
                     </div>
                 </div>
             </div>
@@ -166,7 +162,6 @@
     var AppD = {
         attachEvents: function () {
             var o = this;
-            o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
 
             o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
             o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
@@ -179,7 +174,6 @@
             o.dom.inputs = {};
             o.dom.inputs.$inputGateGroup = $("#Gate_Group");
             o.dom.inputs.$inputShopCode = $("#Shop_Code");
-            o.dom.$btnSave = $("#btnSave");
         },
         data: {},
         dom: {},
@@ -187,7 +181,7 @@
             onClickBtnCreate: function () {
                 var o = this;
                 o.dom.inputs.$inputGateGroup.val('');
-                o.dom.inputs.$inputShopCode.val('');
+                o.dom.inputs.$inputShopCode.data("kendoDropDownList").value('');
 
                 var modal = document.getElementById("myModal");
                 modal.style.display = "block";
@@ -225,14 +219,11 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (data !== 'success') {
                                 swal.fire('', data, 'error');
-                                console.log(jqXHR);
                                 return;
                             }
                             swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            alert(jqXHR.responseText);
                             swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                            console.log(jqXHR);
                         }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
                             o.dom.$grid.data('kendoGrid').dataSource.read();
                         });
@@ -242,49 +233,6 @@
             onClickBtnExcel: function () {
                 var o = this;
                 o.dom.$grid.data('kendoGrid').saveAsExcel();
-            },
-            onClickBtnSave: function () {
-                var o = this;
-                var GateGroup = o.dom.inputs.$inputGateGroup.val();
-                var ShopCode = o.dom.inputs.$inputShopCode.val();
-
-                if (GateGroup !== "" && ShopCode !== "") {
-                    swal.fire({
-                        title: "Save?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                method: 'post',
-                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                                url: 'https://localhost:7072/api/MasterGateGroup/INS',
-                                dataType: 'text',
-                                data: JSON.stringify({
-                                    GateGroup: GateGroup,
-                                    ShopCode: ShopCode
-                                })
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (data !== 'success') {
-                                    swal('Error', data, 'error');
-                                    console.log(jqXHR);
-                                    return;
-                                }
-                                var modal = document.getElementById("myModal");
-                                modal.style.display = "none";
-                                swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
-                            }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
-                                o.dom.$grid.data('kendoGrid').dataSource.read();
-                            });
-                        }
-                    });
-                } else {
-                    swal.fire('', "Please fill all fields", 'error');
-                }
             }
         },
         init: function () {
@@ -314,18 +262,15 @@
                             }).done(function (data, textStatus, jqXHR) {
                                 try {
                                     var result = JSON.parse(data);
-                                    console.log(result);
                                 }
                                 catch (e) {
                                     swal.fire('Error', 'Error loading grid', 'error');
-                                    console.log(data);
                                     options.success({ data: [] });
                                     return;
                                 }
                                 options.success(result);
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
                                 options.success({ data: [] });
                             });
                         }
@@ -381,6 +326,80 @@
                     width: 400
                 }],
                 toolbar: $("#template_toolbar").html(),
+            });
+            
+            $("#Shop_Code").kendoDropDownList({
+                template: '<span>#:data.ShopCode#</span>',
+                valueTemplate: '<span>#:data.ShopCode#</span>',
+                footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Shop Code found',
+                dataValueField: "ShopCode",
+                optionLabel: "select shop...",
+
+                dataSource: {
+                    transport: {
+                        read: function (options) {
+                            $.ajax({
+                                method: 'post',
+                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                                url: 'https://localhost:7072/api/MasterShop/INQ',
+                                dataType: 'text',
+                                data: {}
+                            }).done(function (data, textStatus, jqXHR) {
+                                try {
+                                    var result = JSON.parse(data);
+                                }
+                                catch (e) {
+                                    swal.fire('Error', 'Error loading shop', 'error');
+                                    options.success({ data: [] });
+                                    return;
+                                }
+                                options.success(result);
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                                options.success({ data: [] });
+                            });
+                        }
+                    }
+                }
+            }).data("kendoDropDownList");
+
+            $("#submitMasterGateGroup").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var GateGroup = document.getElementById("Gate_Group").value;
+                var ShopCode = document.getElementById("Shop_Code").value;
+
+                swal.fire({
+                    title: "Save?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterGateGroup/INS',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                GateGroup: GateGroup,
+                                ShopCode: ShopCode
+                            })
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (data !== 'success') {
+                                swal.fire('Error', data, 'error');
+                                return;
+                            }
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "none";
+                            swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        });
+                    }
+                });
             });
         }
     };

@@ -95,10 +95,6 @@
         cursor: pointer;
     }
 
-    .modal-footer {
-        justify-content: flex-start;
-    }
-
     hr {
         background-color: #aaaaaa !important;
     }
@@ -111,7 +107,6 @@
         .k-grid-content {
             height: 45vh;
         }
-
     }
 </style>
 
@@ -126,68 +121,61 @@
             <div class="modal-content">
                 <div class="" role="document">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel">Add New Master Supplier</h4>
+                        <h4 class="modal-title" id="myModalLabel">Add New Supplier</h4>
                     </div>
                     <div class="modal-body">
                         <div class="panel">
                             <div class="panel-body">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" id="submitMasterSupplier">
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Supplier Code</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Supplier Code</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="Supplier_Code" required />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Supplier Name</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Supplier Name</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="Supplier_Name" required />
                                             </div>
                                         </div>
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Supplier Email</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="Supplier_Email" />
+                                            <label class="col-sm-10 control-label">Supplier Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" class="form-control" id="Supplier_Email" pattern="^[a-zA-Z0-9._+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,9}$" required />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex">
-                                        <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Area Code</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="Area_Code" required />
+                                        <div class="form-group form-material col-md-12">
+                                            <label class="col-sm-11 control-label">Area Code</label>
+                                            <div class="col-sm-11">
+                                                <input class="form-control" id="Area_Code" required />
                                             </div>
                                         </div>
-                                        <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">Area Name</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="Area_Name" required />
-                                            </div>
-                                        </div>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="btnSave">Submit</button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <script>
     var AppD = {
         attachEvents: function () {
             var o = this;
-            o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
 
             o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
             o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
@@ -203,8 +191,6 @@
             o.dom.inputs.$inputSupplierName = $("#Supplier_Name");
             o.dom.inputs.$inputSupplierEmail = $("#Supplier_Email");
             o.dom.inputs.$inputAreaCode = $("#Area_Code");
-            o.dom.inputs.$inputAreaName = $("#Area_Name");
-            o.dom.$btnSave = $("#btnSave");
         },
         data: {},
         dom: {},
@@ -215,8 +201,8 @@
                 o.dom.inputs.$inputSupplierCode.val('');
                 o.dom.inputs.$inputSupplierName.val('');
                 o.dom.inputs.$inputSupplierEmail.val('');
-                o.dom.inputs.$inputAreaCode.val('');
-                o.dom.inputs.$inputAreaName.val('');
+                o.dom.inputs.$inputAreaCode.data("kendoDropDownList").value('');
+                document.getElementById("Supplier_Code").disabled = false;
 
                 var modal = document.getElementById("myModal");
                 modal.style.display = "block";
@@ -253,14 +239,11 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (data !== 'success') {
                                 swal.fire('', data, 'error');
-                                console.log(jqXHR);
                                 return;
                             }
                             swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            alert(jqXHR.responseText);
                             swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                            console.log(jqXHR);
                         }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
                             o.dom.$grid.data('kendoGrid').dataSource.read();
                         });
@@ -271,64 +254,15 @@
                 var o = this;
                 o.dom.$grid.data('kendoGrid').saveAsExcel();
             },
-            onClickBtnSave: function () {
-                var o = this;
-                var SupplierCode = o.dom.inputs.$inputSupplierCode.val();
-                var SupplierName = o.dom.inputs.$inputSupplierName.val();
-                var SupplierEmail = o.dom.inputs.$inputSupplierEmail.val();
-                var AreaCode = o.dom.inputs.$inputAreaCode.val();
-                var AreaName = o.dom.inputs.$inputAreaName.val();
-
-                if (SupplierCode !== "") {
-                    swal.fire({
-                        title: "Save?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                method: 'post',
-                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                                url: 'https://localhost:7072/api/MasterSupplier/INS',
-                                dataType: 'text',
-                                data: JSON.stringify({
-                                    Supplier_Code: SupplierCode,
-                                    Supplier_Name: SupplierName,
-                                    Supplier_Email: SupplierEmail,
-                                    Area_Code: AreaCode,
-                                    Area_Name: AreaName,
-                                    UserLogin: 'admin'
-                                })
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (data !== 'success') {
-                                    swal('Error', data, 'error');
-                                    console.log(jqXHR);
-                                    return;
-                                }
-                                var modal = document.getElementById("myModal");
-                                modal.style.display = "none";
-                                swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
-                            }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
-                                o.dom.$grid.data('kendoGrid').dataSource.read();
-                            });
-                        }
-                    });
-                } else {
-                    swal.fire('', "Please fill all fields!", 'error');
-                }
-            },
             onClickBtnUpdate: function (e) {
                 var o = this;
                 var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
                 o.dom.inputs.$inputSupplierCode.val(di.Supplier_Code);
                 o.dom.inputs.$inputSupplierName.val(di.Supplier_Name);
                 o.dom.inputs.$inputSupplierEmail.val(di.Supplier_Email);
-                o.dom.inputs.$inputAreaCode.val(di.Area_Code);
-                o.dom.inputs.$inputAreaName.val(di.Area_Name);
+                o.dom.inputs.$inputAreaCode.data("kendoDropDownList").value(di.Area_Code);
+                document.getElementById("Supplier_Code").disabled = true;
 
                 var modal = document.getElementById("myModal");
                 modal.style.display = "block";
@@ -370,18 +304,15 @@
                             }).done(function (data, textStatus, jqXHR) {
                                 try {
                                     var result = JSON.parse(data);
-                                    console.log(result);
                                 }
                                 catch (e) {
                                     swal.fire('Error', 'Error loading grid', 'error');
-                                    console.log(data);
                                     options.success({ data: [] });
                                     return;
                                 }
                                 options.success(result);
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
                                 options.success({ data: [] });
                             });
                         }
@@ -455,20 +386,93 @@
                 {
                     field: "Area_Code",
                     title: "Area Code",
-                    width: 70
+                    width: 70,
+                    hidden: true
                 },
                 {
                     field: "Area_Name",
                     title: "Area Name",
                     width: 120
-                },
-                {
-                    field: "UserLogin",
-                    title: "User Login",
-                    width: 120
-                },
-                ],
+                }],
                 toolbar: $("#template_toolbar").html(),
+            });
+
+            $("#Area_Code").kendoDropDownList({
+                template: '<span>#:data.Area_Code# - #:data.Area_Name#</span>',
+                valueTemplate: '<span>#:data.Area_Code# - #:data.Area_Name#</span>',
+                footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Area found',
+                dataValueField: "Area_Code",
+                optionLabel: "select area...",
+                dataSource: {
+                    transport: {
+                        read: function (options) {
+                            $.ajax({
+                                method: 'post',
+                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                                url: 'https://localhost:7072/api/MasterArea/INQ',
+                                dataType: 'text',
+                                data: {}
+                            }).done(function (data, textStatus, jqXHR) {
+                                try {
+                                    var result = JSON.parse(data);
+                                }
+                                catch (e) {
+                                    swal.fire('Error', 'Error loading area', 'error');
+                                    options.success({ data: [] });
+                                    return;
+                                }
+                                options.success(result);
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                                options.success({ data: [] });
+                            });
+                        }
+                    }
+                }
+            }).data("kendoDropDownList");
+
+            $("#submitMasterSupplier").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var SupplierCode = document.getElementById("Supplier_Code").value;
+                var SupplierName = document.getElementById("Supplier_Name").value;
+                var SupplierEmail = document.getElementById("Supplier_Email").value;
+                var AreaCode = document.getElementById("Area_Code").value;
+        
+                swal.fire({
+                    title: "Save?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterSupplier/INS',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                Supplier_Code: SupplierCode,
+                                Supplier_Name: SupplierName,
+                                Supplier_Email: SupplierEmail,
+                                Area_Code: AreaCode,
+                                UserLogin: 'admin'
+                            })
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (data !== 'success') {
+                                swal.fire('Error', data, 'error');
+                                return;
+                            }
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "none";
+                            swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        });
+                    }
+                });
             });
         }
     };

@@ -95,10 +95,6 @@
         cursor: pointer;
     }
 
-    .modal-footer {
-        justify-content: flex-start;
-    }
-
     hr {
         background-color: #aaaaaa !important;
     }
@@ -111,7 +107,6 @@
         .k-grid-content {
             height: 45vh;
         }
-
     }
 </style>
 
@@ -126,27 +121,28 @@
             <div class="modal-content">
                 <div class="" role="document">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel">Add New Master Box Type</h4>
+                        <h4 class="modal-title" id="myModalLabel">Add New Box Type</h4>
                     </div>
                     <div class="modal-body">
                         <div class="panel">
                             <div class="panel-body">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" id="submitMasterBox">
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-6 control-label">RFID Type</label>
-                                            <div class="col-sm-9">
+                                            <label class="col-sm-10 control-label">Box Type</label>
+                                            <div class="col-sm-10">
                                                 <input type="text" class="form-control" id="RFID_Type" required />
                                             </div>
                                         </div>
                                     </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+                                    </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-                        <button type="button" class="btn btn-primary" id="btnSave">Submit</button>
                     </div>
                 </div>
             </div>
@@ -158,7 +154,6 @@
     var AppD = {
         attachEvents: function () {
             var o = this;
-            o.dom.$btnSave.on('click', o.eventHandlers.onClickBtnSave.bind(o));
 
             o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
             o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
@@ -170,7 +165,6 @@
             o.dom.$grid = $("#grid");
             o.dom.inputs = {};
             o.dom.inputs.$inputRFIDType = $("#RFID_Type");
-            o.dom.$btnSave = $("#btnSave");
         },
         data: {},
         dom: {},
@@ -213,14 +207,11 @@
                         }).done(function (data, textStatus, jqXHR) {
                             if (data !== 'success') {
                                 swal.fire('', data, 'error');
-                                console.log(jqXHR);
                                 return;
                             }
                             swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
                         }).fail(function (jqXHR, textStatus, errorThrown) {
-                            alert(jqXHR.responseText);
                             swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                            console.log(jqXHR);
                         }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
                             o.dom.$grid.data('kendoGrid').dataSource.read();
                         });
@@ -230,46 +221,6 @@
             onClickBtnExcel: function () {
                 var o = this;
                 o.dom.$grid.data('kendoGrid').saveAsExcel();
-            },
-            onClickBtnSave: function () {
-                var o = this;
-                var RFIDType = o.dom.inputs.$inputRFIDType.val();
-                if (RFIDType !== "") {
-                    swal.fire({
-                        title: "Save?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                method: 'post',
-                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                                url: 'https://localhost:7072/api/MasterBoxType/INS',
-                                dataType: 'text',
-                                data: JSON.stringify({
-                                    RFID_Type: RFIDType
-                                })
-                            }).done(function (data, textStatus, jqXHR) {
-                                if (data !== 'success') {
-                                    swal('Error', data, 'error');
-                                    console.log(jqXHR);
-                                    return;
-                                }
-                                var modal = document.getElementById("myModal");
-                                modal.style.display = "none";
-                                swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
-                            }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
-                                o.dom.$grid.data('kendoGrid').dataSource.read();
-                            });
-                        }
-                    });
-                } else {
-                    swal.fire('', "Box Type is mandatory!", 'error');
-                }
             }
         },
         init: function () {
@@ -280,6 +231,7 @@
         },
         initElements: function () {
             var o = this;
+
             o.dom.$grid.kendoGrid({
                 excel: {
                     fileName: "Master Box Type.xlsx",
@@ -298,18 +250,15 @@
                             }).done(function (data, textStatus, jqXHR) {
                                 try {
                                     var result = JSON.parse(data);
-                                    console.log(result);
                                 }
                                 catch (e) {
                                     swal.fire('Error', 'Error loading grid', 'error');
-                                    console.log(data);
                                     options.success({ data: [] });
                                     return;
                                 }
                                 options.success(result);
                             }).fail(function (jqXHR, textStatus, errorThrown) {
                                 swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-                                console.log(jqXHR);
                                 options.success({ data: [] });
                             });
                         }
@@ -355,11 +304,48 @@
                 },
                 {
                     field: "RFID_Type",
-                    title: "BoxType",
+                    title: "Box Type",
                     width: 800
                 },
                 ],
                 toolbar: $("#template_toolbar").html(),
+            });
+
+            $("#submitMasterBox").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var RFIDType = document.getElementById("RFID_Type").value;
+       
+                swal.fire({
+                    title: "Save?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterBoxType/INS',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                RFID_Type: RFIDType
+                            })
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (data !== 'success') {
+                                swal.fire('Error', data, 'error');
+                                return;
+                            }
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "none";
+                            swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        });
+                    }
+                });
             });
         }
     };
