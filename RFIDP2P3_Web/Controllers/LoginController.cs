@@ -10,7 +10,6 @@ namespace RFIDP2P3_Web.Controllers
 {
     public class LoginController : Controller
     {
-
         public IActionResult Index()
         {
             return View();
@@ -36,7 +35,7 @@ namespace RFIDP2P3_Web.Controllers
 
                 client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
 
-                using (var response = await client.PostAsync("https://localhost:7072/api/Login", content))
+                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Index", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     if (apiResponse == "User not found/not active")
@@ -54,6 +53,37 @@ namespace RFIDP2P3_Web.Controllers
                         return RedirectToAction("Index", "Home", new { username = username });
                         //userLogin = JsonConvert.DeserializeObject<User>(apiResponse);
                         //return RedirectToAction("Index", "Home");
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            // Pass the handler to httpclient(from you are calling api)
+            HttpClient client = new HttpClient(clientHandler);
+            string apiResponse;
+
+            using (client)
+            {
+                User userLogin = new User();
+                userLogin.PIC_ID = "admin";
+                StringContent content = new StringContent(JsonConvert.SerializeObject(userLogin), Encoding.UTF8, "application/json");
+
+                client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
+
+                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Logout", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    if (apiResponse != "success")
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Login");
                     }
                 }
             }
