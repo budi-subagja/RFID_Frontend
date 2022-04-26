@@ -5,6 +5,8 @@ using RFIDP2P3_Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace RFIDP2P3_Web.Controllers
 {
@@ -51,9 +53,26 @@ namespace RFIDP2P3_Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home", new { username = username });
-                        //userLogin = JsonConvert.DeserializeObject<User>(apiResponse);
-                        //return RedirectToAction("Index", "Home");
+                        
+                        //ambil res di parse jadi array
+                        JArray array = JArray.Parse(apiResponse);
+                        //diserialize untuk masuk ke session
+                        var sessionSerialize = JsonConvert.SerializeObject(array);
+                        //masok session
+                        HttpContext.Session.SetString("mysession", sessionSerialize);
+
+
+                        /*
+                        JObject firstObject = (JObject)array.First;
+                        var adminValue = firstObject.GetValue("Privileges");
+                        string str = HttpContext.Session.GetString("mysession");
+                        JArray arrays = JArray.Parse(str);
+                        //JObject firstObjectz = (JObject)arrays.First;
+                        */
+                        return RedirectToAction("Index", "Home");
+                        
+                        //buat log
+                        //return base.Content("<div>" + firstObjectz + "</div>", "text/html");
                     }
                 }
             }

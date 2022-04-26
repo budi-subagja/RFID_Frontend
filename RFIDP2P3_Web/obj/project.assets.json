@@ -8825,26 +8825,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\henry\\.nuget\\packages\\": {}
+    "C:\\Users\\davin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\webproject\\RFIDP2P3\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
+      "projectUniqueName": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
       "projectName": "RFIDP2P3_Web",
-      "projectPath": "C:\\webproject\\RFIDP2P3\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
-      "packagesPath": "C:\\Users\\henry\\.nuget\\packages\\",
-      "outputPath": "C:\\webproject\\RFIDP2P3\\RFIDP2P3_Web\\RFIDP2P3_Web\\obj\\",
+      "projectPath": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
+      "packagesPath": "C:\\Users\\davin\\.nuget\\packages\\",
+      "outputPath": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\henry\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\davin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8894,7 +8892,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }
