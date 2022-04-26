@@ -6,51 +6,63 @@ namespace RFIDP2P3_Web.Controllers
     {
         public IActionResult MasterUserGroup()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterPrivilege()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterUser()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterShop()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterGateGroup()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterGate()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterArea()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterSupplier()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterBoxType()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterRFID()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterTransporter()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
         public IActionResult MasterNews()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
     }
 }

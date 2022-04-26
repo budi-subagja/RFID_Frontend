@@ -47,16 +47,23 @@
 				<i class="material-icons">
 					<img src="~/img/icon.png" width="25px" height="25px" />
 				</i>
+<<<<<<< HEAD
 				<span class="icon-text"><b></b></span>
+=======
+				<span class="icon-text"><b>@Context.Session.GetString("PIC_Name")</b></span>
+>>>>>>> 0ce7495fe995d9d502772863d90ddeb2410d079b
 			</button>
 			<div class="contentz">
+				@if(Context.Session.GetString("read_password") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Security" asp-action="Index">
+							<span class="icon-text">&nbsp;Security</span>
+						</a>
+					</div>
+				}
 				<div class="rounded">
-					<a asp-controller="Tools" asp-action="Index">
-						<span class="icon-text">&nbsp;Security</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a class="red" asp-controller="Login" asp-action="Index">
+					<a class="red" asp-controller="Login" asp-action="Logout">
 						<span class="icon-text">&nbsp;Log Out</span>
 					</a>
 				</div>
@@ -87,66 +94,102 @@
 				<span class="icon-text"><b>Master</b></span>
 			</button>
 			<div class="contentz">
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterUserGroup" class="@getClass("Master", "MasterUserGroup")">
-						<span class="icon-text">&nbsp;Master User Group</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterPrivilege" class="@getClass("Master", "MasterPrivilege")">
-						<span class="icon-text">&nbsp;Master Privilege</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
-						<span class="icon-text">&nbsp;Master User</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
-						<span class="icon-text">&nbsp;Master Shop</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterGateGroup" class="@getClass("Master", "MasterGateGroup")">
-						<span class="icon-text">&nbsp;Master Gate Group</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
-						<span class="icon-text">&nbsp;Master Gate</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
-						<span class="icon-text">&nbsp;Master Area</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterSupplier" class="@getClass("Master", "MasterSupplier")">
-						<span class="icon-text">&nbsp;Master Supplier</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
-						<span class="icon-text">&nbsp;Master Box Type</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
-						<span class="icon-text">&nbsp;Master RFID</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterTransporter" class="@getClass("Master", "MasterTransporter")">
-						<span class="icon-text">&nbsp;Master Transporter</span>
-					</a>
-				</div>
-				<div class="rounded">
-					<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
-						<span class="icon-text">&nbsp;Master News</span>
-					</a>
-				</div>
+				@if (Context.Session.GetString("read_master_user_group") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterUserGroup" class="@getClass("Master", "MasterUserGroup")">
+							<span class="icon-text">&nbsp;Master User Group</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_user_priv") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterPrivilege" class="@getClass("Master", "MasterPrivilege")">
+							<span class="icon-text">&nbsp;Master Privilege</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_user") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
+							<span class="icon-text">&nbsp;Master User</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_shop") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
+							<span class="icon-text">&nbsp;Master Shop</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_gate_group") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterGateGroup" class="@getClass("Master", "MasterGateGroup")">
+							<span class="icon-text">&nbsp;Master Gate Group</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_gate") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
+							<span class="icon-text">&nbsp;Master Gate</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_area") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
+							<span class="icon-text">&nbsp;Master Area</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_supplier") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterSupplier" class="@getClass("Master", "MasterSupplier")">
+							<span class="icon-text">&nbsp;Master Supplier</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_box_type") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
+							<span class="icon-text">&nbsp;Master Box Type</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_rfid") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
+							<span class="icon-text">&nbsp;Master RFID</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_transporter") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterTransporter" class="@getClass("Master", "MasterTransporter")">
+							<span class="icon-text">&nbsp;Master Transporter</span>
+						</a>
+					</div>
+				}
+				@if (Context.Session.GetString("read_master_news") == "1")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
+							<span class="icon-text">&nbsp;Master News</span>
+						</a>
+					</div>
+				}
 			</div>
 		</div>
 	</div>

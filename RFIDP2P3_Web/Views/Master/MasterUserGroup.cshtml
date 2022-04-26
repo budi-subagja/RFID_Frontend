@@ -282,7 +282,7 @@
 								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
 								dataType: 'text',
 								data: JSON.stringify({
-									UserGroup_Id: "001"
+									UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")"
 								})
 							}).done(function (data, textStatus, jqXHR) {
 								try {
@@ -335,20 +335,30 @@
 					buttonCount: 5
 				},
 				columns: [
-				{
-					width: 50,
-					command: [{
-						name: "Update",
-						text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;color:#737373;'></i>"
-					}]
-				},
-				{
-					width: 50,
-					command: [{
-						name: "Delete",
-						text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;color:#800000;'></i>"
-					}]
-				},
+                @if(Context.Session.GetString("edit_master_user_group") == "1")
+                {
+                    <text>
+                    {
+                        width: 50,
+                        command: [{
+                            name: "Update",
+                            text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+                        }]
+                    },
+                    </text>
+                }
+                @if (Context.Session.GetString("del_master_user_group") == "1")
+                {
+                    <text>
+                    {
+                        width: 50,
+                        command: [{
+                            name: "Delete",
+                            text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+                        }]
+                    },
+                    </text>
+                }
 				{
 					field: "UserGroup_Id",
 					title: "ID",
@@ -384,7 +394,7 @@
 							data: JSON.stringify({
 								UserGroup_Id: UserGroup_Id,
 								UserGroup: UserGroup,
-								UserLogin: 'admin'
+                                UserLogin: "@Context.Session.GetString("PIC_ID")"
 							})
 						}).done(function (data, textStatus, jqXHR) {
 							if (data !== 'success') {
@@ -413,12 +423,15 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
-		<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
-			<i class="k-icon k-i-plus"></i> Add New
-		</button>
-		<div class = "spacew"></div>
+        @if(Context.Session.GetString("add_master_user_group") == "1")
+        {
+            <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+                <i class="k-icon k-i-plus"></i><span>Add New</span>
+            </button>
+            <div class = "spacew"></div>
+        }
 		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
-			<i class="k-icon k-i-excel"></i> Save As Exel
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
 		</button>
 	</div>
 </script>

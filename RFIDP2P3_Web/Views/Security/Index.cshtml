@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewData["Title"] = "Security";
+}
+<style>
+    .page-main {
+        margin-top: 100px;
+        margin-left: 30px;
+    }
+</style>
+
+<div class="page-main">
+    <div class="page-content">
+        <h3>Security</h3>
+        <hr>
+        <form class="form-horizontal" id="submitSecurity">
+            <div class="form-group form-material col-md-6">
+                <label class="col-sm-12 control-label">User Name</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="PIC_ID" value="admin" disabled />
+                </div>
+            </div>
+            <div class="form-group form-material col-md-6">
+                <label class="col-sm-12 control-label">New Password</label>
+                <div class="col-sm-12">
+                    <input type="password" onkeyup="checkVal()" class="form-control" id="NewPass" required />
+                </div>
+            </div>
+            <div class="form-group form-material col-md-6">
+                <label class="col-sm-12 control-label">Retype New Password</label>
+                <div class="col-sm-12">
+                    <input type="password" onkeyup="checkVal()" class="form-control" id="ReNewPass" required />
+                </div>
+            </div>
+			<div class="red">
+                <label class="col-sm-12" id="valid"></label>
+			</div>
+            <input class="btn btn-primary" type="submit" value="Save New Password" />
+        </form>
+    </div>
+</div>
+
+<script>
+    function checkVal(){
+        var newpass = document.getElementById("NewPass").value;
+        var renewpass = document.getElementById("ReNewPass").value;
+        if(newpass != renewpass) document.getElementById("valid").innerHTML = "Password do not match!";
+        else document.getElementById("valid").innerHTML = "";
+    }
+
+    $("#submitSecurity").submit(function (e) {
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        var PIC_ID = document.getElementById("PIC_ID").value;
+        var Password = document.getElementById("NewPass").value;
+        var newpass = document.getElementById("ReNewPass").value;
+
+        if(Password == newpass) {
+            swal.fire({
+                title: "Save?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'post',
+                        headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                        url: 'https://localhost:7072/api/Security',
+                        dataType: 'text',
+                        data: JSON.stringify({
+                            PIC_ID: PIC_ID,
+                            password: Password
+                        })
+                    }).done(function (data, textStatus, jqXHR) {
+                        if (data !== 'success') {
+                            swal.fire('Error', data, 'error');
+                            return;
+                        }
+                        swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                    }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
+</script>

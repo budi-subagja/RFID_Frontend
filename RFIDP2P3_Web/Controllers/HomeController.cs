@@ -8,6 +8,7 @@ namespace RFIDP2P3_Web.Controllers
     {
         public IActionResult Index(String username)
         {
+<<<<<<< HEAD
             string str = HttpContext.Session.GetString("mysession");
 
             JArray array = JArray.Parse(str);
@@ -39,6 +40,10 @@ namespace RFIDP2P3_Web.Controllers
             //ViewBag.name = user;
             //return base.Content("<div>" + password + "</div>", "text/html");
             return View();
+=======
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
+>>>>>>> 0ce7495fe995d9d502772863d90ddeb2410d079b
         }
     }
 }
