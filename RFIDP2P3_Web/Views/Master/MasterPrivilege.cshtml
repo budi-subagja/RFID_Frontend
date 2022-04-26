@@ -100,7 +100,7 @@
 			o.dom.$grid = $("#grid");
 		},
 		data: {
-			UserGroup_Id: ''
+			UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")"
 		},
 		dom: {},
 		eventHandlers: {
@@ -126,7 +126,6 @@
 							location.reload();
 						}).fail(function (jqXHR, textStatus, errorThrown) {
 							swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-							console.log(jqXHR);
 						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
 							o.dom.$grid.data('kendoGrid').dataSource.read();
 						});
@@ -206,15 +205,12 @@
 								}
 								catch (e) {
 									swal.fire('Error', 'Error loading grid', 'error');
-									console.log(data);
 									options.success({ data: [] });
 									return;
 								}
-								console.log(result);
 								options.success(result);
 							}).fail(function (jqXHR, textStatus, errorThrown) {
 								swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								console.log(jqXHR);
 								options.success({ data: [] });
 							});
 						}
@@ -278,7 +274,7 @@
 					width: 80,
 					field: "checkedbox_add",
 					title: "Add",
-					template:'#if(data.Menu_Id!=="password"){ # <input type="checkbox" #: checkedbox_add ? "checked" : "" # class="checkbox checkbox_add"> #}#',
+					template:'#if(data.Menu_Id!=="password"&&data.Menu_Id!=="master_user_priv"){ # <input type="checkbox" #: checkedbox_add ? "checked" : "" # class="checkbox checkbox_add"> #}#',
 				},
 				{
 					width: 80,
@@ -317,7 +313,7 @@
 								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
 								dataType: 'text',
 								data: JSON.stringify({
-									UserGroup_Id: "001"
+									UserGroup_Id: o.data.UserGroup_Id
 								})
 							}).done(function (data, textStatus, jqXHR) {
 								try {
@@ -325,30 +321,21 @@
 								}
 								catch (e) {
 									swal.fire('Error', 'Error loading combobox', 'error');
-									console.log(data);
 									options.success({ data: [] });
 									return;
 								}
 								options.success(result);
 							}).fail(function (jqXHR, textStatus, errorThrown) {
 								swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								console.log(jqXHR);
 								options.success({ data: [] });
 							});
-						}
-					},
-					schema: {
-						model: {
-							fields: {
-								UserGroup_Id: { type: "string" },
-								UserGroup: { type: "string" }
-							}
 						}
 					}
 				},
 				placeholder: "User Group...",
 				dataTextField: "UserGroup",
 				dataValueField: "UserGroup_Id",
+				value: o.data.UserGroup_Id,
 				filter: 'contains',
 				change: function (e) {
 					if (this.value() && this.selectedIndex == -1) {
@@ -378,6 +365,10 @@
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
 		<input type="text" name="usergroupid" id="usergroupid" value="" placeholder = "search">
-		<button class="k-button" id="btnSave" type="button">Save</button>
+		@if(Context.Session.GetString("edit_master_user_priv") == "1") 
+		{
+            <div class = "spacew"></div>
+			<button class="k-button" id="btnSave" type="button">Save</button>
+		}
 	</div>
 </script>

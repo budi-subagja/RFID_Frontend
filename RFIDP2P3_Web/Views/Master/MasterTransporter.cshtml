@@ -148,7 +148,6 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 
 <script>
@@ -297,13 +296,18 @@
 					buttonCount: 5
 				},
 				columns: [
-				{
-					width: 50,
-					command: [{
-						name: "Delete",
-						text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
-					}]
-				},
+                @if (Context.Session.GetString("del_master_transporter") == "1")
+                {
+                    <text>
+                    {
+                        width: 50,
+                        command: [{
+                            name: "Delete",
+                            text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+                        }]
+                    },
+                    </text>
+                }
 				{
 					field: "Transporter",
 					title: "Transporter",
@@ -330,8 +334,7 @@
 							url: 'https://localhost:7072/api/MasterTransporter/INS',
 							dataType: 'text',
 							data: JSON.stringify({
-								Transporter: Transporter,
-								UserLogin: 'admin'
+								Transporter: Transporter
 							})
 						}).done(function (data, textStatus, jqXHR) {
 							if (data !== 'success') {
@@ -359,12 +362,15 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
-		<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
-			<i class="k-icon k-i-plus"></i> Add New
-		</button>
-		<div class = "spacew"></div>
+        @if(Context.Session.GetString("add_master_transporter") == "1")
+        {
+            <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+                <i class="k-icon k-i-plus"></i><span>Add New</span>
+            </button>
+            <div class = "spacew"></div>
+        }
 		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
-			<i class="k-icon k-i-excel"></i> Save As Exel
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
 		</button>
 	</div>
 </script>

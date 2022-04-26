@@ -6,8 +6,8 @@ namespace RFIDP2P3_Web.Controllers
     {
         public IActionResult Index(String username)
         {
-            ViewBag.Username = username;
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
         }
     }
 }

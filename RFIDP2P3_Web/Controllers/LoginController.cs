@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using RFIDP2P3_Web.Models;
+﻿using RFIDP2P3_Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
@@ -12,10 +9,9 @@ namespace RFIDP2P3_Web.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            if (HttpContext.Session.GetString("PIC_ID") == null) return View();
+            else return RedirectToAction("Index", "Home");
         }
-
-        public ViewResult AddLogin() => View();
 
         [HttpPost]
         public async Task<IActionResult> Index(string username, string password)
@@ -50,9 +46,19 @@ namespace RFIDP2P3_Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home", new { username = username });
-                        //userLogin = JsonConvert.DeserializeObject<User>(apiResponse);
-                        //return RedirectToAction("Index", "Home");
+                        userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
+                        HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
+                        HttpContext.Session.SetString("password", userLogin.password);
+                        HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
+                        HttpContext.Session.SetString("UserGroup_Id", userLogin.UserGroup_Id);
+                        foreach (var privilege in userLogin.Privileges)
+                        {
+                            HttpContext.Session.SetString("read_" + privilege.Menu_Id, privilege.checkedbox_read);
+                            HttpContext.Session.SetString("add_" + privilege.Menu_Id, privilege.checkedbox_add);
+                            HttpContext.Session.SetString("edit_" + privilege.Menu_Id, privilege.checkedbox_edit);
+                            HttpContext.Session.SetString("del_" + privilege.Menu_Id, privilege.checkedbox_del);
+                        }
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }
@@ -60,6 +66,8 @@ namespace RFIDP2P3_Web.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Clear();
+
             HttpClientHandler clientHandler = new HttpClientHandler();
             clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
             // Pass the handler to httpclient(from you are calling api)
@@ -77,14 +85,8 @@ namespace RFIDP2P3_Web.Controllers
                 using (var response = await client.PostAsync("https://localhost:7072/api/Login/Logout", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
-                    if (apiResponse != "success")
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Login");
-                    }
+                    if (apiResponse != "success") return RedirectToAction("Index", "Home");
+                    else return RedirectToAction("Index", "Login");
                 }
             }
         }

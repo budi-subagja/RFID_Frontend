@@ -296,13 +296,18 @@
                     buttonCount: 5
                 },
                 columns: [
+                @if (Context.Session.GetString("del_master_shop") == "1")
                 {
-                    width: 50,
-                    command: [{
-                        name: "Delete",
-                        text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
-                    }]
-                },
+                    <text>
+                    {
+                        width: 50,
+                        command: [{
+                            name: "Delete",
+                            text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+                        }]
+                    },
+                    </text>
+                }
                 {
                     field: "ShopCode",
                     title: "Shop Code",
@@ -357,12 +362,15 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
     <div class="toolbar">
-        <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
-            <i class="k-icon k-i-plus"></i> Add New
-        </button>
-        <div class = "spacew"></div>
+        @if(Context.Session.GetString("add_master_shop") == "1")
+        {
+            <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+                <i class="k-icon k-i-plus"></i><span>Add New</span>
+            </button>
+            <div class = "spacew"></div>
+        }
 		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
-			<i class="k-icon k-i-excel"></i> Save As Exel
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
 		</button>
     </div>
 </script>
