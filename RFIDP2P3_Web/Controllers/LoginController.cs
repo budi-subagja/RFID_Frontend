@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Http;
 
 namespace RFIDP2P3_Web.Controllers
 {
@@ -33,7 +31,7 @@ namespace RFIDP2P3_Web.Controllers
 
                 client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
 
-                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Index", content))
+                using (var response = await client.PostAsync("https://localhost:7072/api/Login", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     if (apiResponse == "User not found/not active")
@@ -48,29 +46,9 @@ namespace RFIDP2P3_Web.Controllers
                     }
                     else
                     {
-<<<<<<< HEAD
                         
-                        //ambil res di parse jadi array
-                        JArray array = JArray.Parse(apiResponse);
-                        //diserialize untuk masuk ke session
-                        var sessionSerialize = JsonConvert.SerializeObject(array);
-                        //masok session
-                        HttpContext.Session.SetString("mysession", sessionSerialize);
-
-
-                        /*
-                        JObject firstObject = (JObject)array.First;
-                        var adminValue = firstObject.GetValue("Privileges");
-                        string str = HttpContext.Session.GetString("mysession");
-                        JArray arrays = JArray.Parse(str);
-                        //JObject firstObjectz = (JObject)arrays.First;
-                        */
-                        return RedirectToAction("Index", "Home");
-                        
-                        //buat log
-                        //return base.Content("<div>" + firstObjectz + "</div>", "text/html");
-=======
                         userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
+                        
                         HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
                         HttpContext.Session.SetString("password", userLogin.password);
                         HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
@@ -83,7 +61,6 @@ namespace RFIDP2P3_Web.Controllers
                             HttpContext.Session.SetString("del_" + privilege.Menu_Id, privilege.checkedbox_del);
                         }
                         return RedirectToAction("Index", "Home");
->>>>>>> 0ce7495fe995d9d502772863d90ddeb2410d079b
                     }
                 }
             }

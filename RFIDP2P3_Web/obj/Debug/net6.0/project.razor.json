@@ -16333,6 +16333,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "e:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\Views\\Security\\Index.cshtml",
+      "TargetPath": "Views\\Security\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "e:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\Views\\Master\\MasterArea.cshtml",
       "TargetPath": "Views\\Master\\MasterArea.cshtml",
       "FileKind": "mvc"
