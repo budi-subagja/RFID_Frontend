@@ -48,7 +48,6 @@ namespace RFIDP2P3_Web.Controllers
                     {
                         userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
                         HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
-                        HttpContext.Session.SetString("password", userLogin.password);
                         HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
                         HttpContext.Session.SetString("UserGroup_Id", userLogin.UserGroup_Id);
                         foreach (var privilege in userLogin.Privileges)
