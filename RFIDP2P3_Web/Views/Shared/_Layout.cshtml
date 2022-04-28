@@ -53,7 +53,7 @@
 				<i class="material-icons">
 					<img src="~/img/icon.png" width="25px" height="25px" />
 				</i>
-				<span class="icon-text"><b>@HttpContextAccessor.HttpContext.Session.GetString("PIC_ID")</b></span>
+				<div class = "flex flexstart"><div class = "username"><b>@HttpContextAccessor.HttpContext.Session.GetString("PIC_Name")</b></div></div>
 			</button>
 			<div class="contentz-user">
 				<div class="rounded">
@@ -170,12 +170,12 @@
 <script>
 	//sidebar
 	document.getElementById("mySidebar").addEventListener("mouseover", function () {
-		
+
 		document.getElementById("mySidebar").style.width = "270px";
 		document.getElementById("content").style.marginLeft = "270px";
 	});
-	document.getElementById("mySidebar").addEventListener("mouseout", function () {
-		
+	document.getElementById("mySidebar").addEventListener("mouseouts", function () {
+
 		document.getElementById("mySidebar").style.width = "85px";
 		document.getElementById("content").style.marginLeft = "85px";
 	});
@@ -186,7 +186,7 @@
 
 	if (window.location.pathname.toString().includes("Master")) {
 
-		var master = document.getElementsByClassName("contentz");
+		var master = document.getElementsByClassName("content");
 
 		for (var i = 0; i < master.length; i += 1) {
 			master[i].style.display = 'block';
@@ -330,7 +330,7 @@
 		display: none;
 		overflow: hidden;
 	}
-		
+
 
 	footer {
 		position: fixed;
@@ -483,8 +483,15 @@
 		filter: opacity(50%);
 	}
 
-	h3{
+	h3 {
 		font-size: 20px;
+	}
+
+	.username {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100px;
 	}
 
 	@@media screen and (max-height: 1400px) {
