@@ -1,8 +1,13 @@
-﻿@functions {
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@functions {
 	public string getClass(string ctr, string act)
 	{
 		var ctrName = ViewContext.RouteData.Values["controller"]?.ToString();
 		var actName = ViewContext.RouteData.Values["action"]?.ToString();
+
+
 		if (ctrName == ctr && actName == act) return "active";
 		else return "";
 	}
@@ -10,6 +15,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>@ViewData["Title"] - RFID P2P3</title>
 
@@ -19,7 +25,7 @@
 	<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
 
 	<link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
-	
+
 	<link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/lib/bootstrap/js/bootstrap.bundle.min.js" />
 
@@ -31,7 +37,7 @@
 
 	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
 	<link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css" />
-	
+
 	<link rel="stylesheet" href="~/css/Material-Icons.css" />
 	<link rel="icon" href="~/img/icon.png" />
 </head>
@@ -47,21 +53,14 @@
 				<i class="material-icons">
 					<img src="~/img/icon.png" width="25px" height="25px" />
 				</i>
-<<<<<<< HEAD
-				<span class="icon-text"><b></b></span>
-=======
-				<span class="icon-text"><b>@Context.Session.GetString("PIC_Name")</b></span>
->>>>>>> 0ce7495fe995d9d502772863d90ddeb2410d079b
+				<span class="icon-text"><b>@HttpContextAccessor.HttpContext.Session.GetString("PIC_ID")</b></span>
 			</button>
-			<div class="contentz">
-				@if(Context.Session.GetString("read_password") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Security" asp-action="Index">
-							<span class="icon-text">&nbsp;Security</span>
-						</a>
-					</div>
-				}
+			<div class="contentz-user">
+				<div class="rounded">
+					<a asp-controller="Tools" asp-action="Index">
+						<span class="icon-text">&nbsp;Security</span>
+					</a>
+				</div>
 				<div class="rounded">
 					<a class="red" asp-controller="Login" asp-action="Logout">
 						<span class="icon-text">&nbsp;Log Out</span>
@@ -94,102 +93,73 @@
 				<span class="icon-text"><b>Master</b></span>
 			</button>
 			<div class="contentz">
-				@if (Context.Session.GetString("read_master_user_group") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterUserGroup" class="@getClass("Master", "MasterUserGroup")">
-							<span class="icon-text">&nbsp;Master User Group</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_user_priv") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterPrivilege" class="@getClass("Master", "MasterPrivilege")">
-							<span class="icon-text">&nbsp;Master Privilege</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_user") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
-							<span class="icon-text">&nbsp;Master User</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_shop") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
-							<span class="icon-text">&nbsp;Master Shop</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_gate_group") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterGateGroup" class="@getClass("Master", "MasterGateGroup")">
-							<span class="icon-text">&nbsp;Master Gate Group</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_gate") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
-							<span class="icon-text">&nbsp;Master Gate</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_area") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
-							<span class="icon-text">&nbsp;Master Area</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_supplier") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterSupplier" class="@getClass("Master", "MasterSupplier")">
-							<span class="icon-text">&nbsp;Master Supplier</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_box_type") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
-							<span class="icon-text">&nbsp;Master Box Type</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_rfid") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
-							<span class="icon-text">&nbsp;Master RFID</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_transporter") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterTransporter" class="@getClass("Master", "MasterTransporter")">
-							<span class="icon-text">&nbsp;Master Transporter</span>
-						</a>
-					</div>
-				}
-				@if (Context.Session.GetString("read_master_news") == "1")
-				{
-					<div class="rounded">
-						<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
-							<span class="icon-text">&nbsp;Master News</span>
-						</a>
-					</div>
-				}
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterUserGroup"
+						class="@getClass("Master", "MasterUserGroup")">
+						<span class="icon-text">&nbsp;Master User Group</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterPrivilege"
+						class="@getClass("Master", "MasterPrivilege")">
+						<span class="icon-text">&nbsp;Master Privilege</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
+						<span class="icon-text">&nbsp;Master User</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
+						<span class="icon-text">&nbsp;Master Shop</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterGateGroup"
+						class="@getClass("Master", "MasterGateGroup")">
+						<span class="icon-text">&nbsp;Master Gate Group</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
+						<span class="icon-text">&nbsp;Master Gate</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
+						<span class="icon-text">&nbsp;Master Area</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterSupplier"
+						class="@getClass("Master", "MasterSupplier")">
+						<span class="icon-text">&nbsp;Master Supplier</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
+						<span class="icon-text">&nbsp;Master Box Type</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
+						<span class="icon-text">&nbsp;Master RFID</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterTransporter"
+						class="@getClass("Master", "MasterTransporter")">
+						<span class="icon-text">&nbsp;Master Transporter</span>
+					</a>
+				</div>
+				<div class="rounded">
+					<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
+						<span class="icon-text">&nbsp;Master News</span>
+					</a>
+				</div>
+				<div class="padding"></div>
+				<div class="padding"></div>
 			</div>
 		</div>
 	</div>
@@ -200,10 +170,12 @@
 <script>
 	//sidebar
 	document.getElementById("mySidebar").addEventListener("mouseover", function () {
-		document.getElementById("mySidebar").style.width = "250px";
-		document.getElementById("content").style.marginLeft = "250px";
+		
+		document.getElementById("mySidebar").style.width = "270px";
+		document.getElementById("content").style.marginLeft = "270px";
 	});
 	document.getElementById("mySidebar").addEventListener("mouseout", function () {
+		
 		document.getElementById("mySidebar").style.width = "85px";
 		document.getElementById("content").style.marginLeft = "85px";
 	});
@@ -212,17 +184,35 @@
 	var coll = document.getElementsByClassName("collapsible");
 	var i;
 
+	if (window.location.pathname.toString().includes("Master")) {
+
+		var master = document.getElementsByClassName("contentz");
+
+		for (var i = 0; i < master.length; i += 1) {
+			master[i].style.display = 'block';
+		}
+
+	}
+
 	for (i = 0; i < coll.length; i++) {
 		coll[i].addEventListener("click", function () {
-			this.classList.toggle("active");
+
 			var content = this.nextElementSibling;
+
+
 			if (content.style.display === "block") {
 				content.style.display = "none";
 			} else {
 				content.style.display = "block";
 			}
+
+
 		});
+
+
 	}
+
+
 
 	const theme = window.localStorage.getItem("theme");
 
@@ -275,18 +265,17 @@
 		width: 85px;
 		position: fixed;
 		z-index: 99;
-		top: 30px;
-		left: 20px;
+		top: 80px;
 		bottom: 30px;
 		background-color: #fff;
 		transition: 0.5s;
 		overflow-x: hidden;
-		padding-top: 60px;
+		padding-top: 30px;
 		white-space: nowrap;
 		-moz-box-shadow: -3px 0 7px 0 #555;
 		-webkit-box-shadow: -3px 0 7px 0 #555;
 		box-shadow: -0px 0 7px 0 #555;
-		border-radius: 20px;
+		border-radius: 0px 20px 20px 0px;
 	}
 
 	.sidebar button {
@@ -336,6 +325,13 @@
 		transition: 0.5s;
 	}
 
+	.contentz-user {
+		padding: 0 55px;
+		display: none;
+		overflow: hidden;
+	}
+		
+
 	footer {
 		position: fixed;
 		bottom: 0;
@@ -347,10 +343,15 @@
 		padding: 8px 16px;
 	}
 
+	.active {
+		background-color: #e6e6e6;
+		padding-right: 200% !important;
+	}
+
 	.rounded:hover {
 		background-color: #e6e6e6;
 		width: fit-content !important;
-		padding-right: 10px;
+		padding-right: 100px;
 	}
 
 	.rounded-full:hover {
@@ -474,17 +475,21 @@
 		color: white;
 	}
 
-	.k-grid-toolbar{
-		background-color: #F0F2F5;
+	.k-grid-toolbar {
+		background-color: #fff;
 	}
 
-	hr{
+	hr {
 		filter: opacity(50%);
+	}
+
+	h3{
+		font-size: 20px;
 	}
 
 	@@media screen and (max-height: 1400px) {
 		.banner {
-			height: 70px;
+			height: 55px;
 		}
 	}
 
