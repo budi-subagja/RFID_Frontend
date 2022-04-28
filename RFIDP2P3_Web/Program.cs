@@ -1,9 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
 
 builder.Services.AddSession(options =>
 {
@@ -11,8 +9,6 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
-
-app.UseSession();
 
 // Configure the HTTP request pipeline.
 //if (!app.Environment.IsDevelopment())

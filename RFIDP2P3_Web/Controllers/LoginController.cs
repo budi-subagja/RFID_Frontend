@@ -31,7 +31,7 @@ namespace RFIDP2P3_Web.Controllers
 
                 client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
 
-                using (var response = await client.PostAsync("https://localhost:7072/api/Login", content))
+                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Index", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     if (apiResponse == "User not found/not active")
@@ -46,9 +46,7 @@ namespace RFIDP2P3_Web.Controllers
                     }
                     else
                     {
-                        
                         userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
-                        
                         HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
                         HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
                         HttpContext.Session.SetString("UserGroup_Id", userLogin.UserGroup_Id);
