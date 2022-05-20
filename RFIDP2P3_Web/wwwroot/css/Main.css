@@ -89,7 +89,7 @@
     transition: 0.2s;
     width: 40px;
     height: 40px;
-    background-color: #ffa5a5;
+    background-color: #e6e6e6;
     border-radius: 50px;
     transform: translate(-10px);
 }
@@ -99,10 +99,16 @@
     color: #ff4b4b;
 }
 
+.rounded {
+    transform: translateX(-20px);
+    padding-left: 20px;
+}
+
 .rounded:hover {
     background-color: #e6e6e6;
     width: fit-content !important;
-    padding-right: 100px;
+    padding-right: 200px;
+    border-radius: 50px!important;
 }
 
 .rounded-full:hover {
@@ -193,37 +199,6 @@ body::-webkit-scrollbar-thumb {
 .sidebar::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
-}
-
-.dark-mode {
-    background-color: #202124;
-    color: white;
-}
-
-    .dark-mode .grey {
-        color: white !important;
-    }
-
-.dark-mode-side {
-    background-color: #171717;
-    color: white;
-}
-
-.dark-mode a {
-    color: white;
-}
-
-.dark-mode i {
-    color: white;
-}
-
-.dark-mode a:hover {
-    color: black !important;
-}
-
-.dark-mode button {
-    background-color: #171717;
-    color: white;
 }
 
 .k-grid-toolbar {

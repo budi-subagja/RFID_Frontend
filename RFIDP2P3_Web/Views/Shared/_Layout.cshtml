@@ -205,6 +205,7 @@
 </body>
 
 <script>
+	var openMenuProfile = "no";
 	var openMenu = "no";
 
 	//sidebar
@@ -214,17 +215,21 @@
 
 		var iconText = document.getElementsByClassName("icon-text");
 
-		for (var i=0;i<iconText.length;i+=1){
+        for (var i = 0; i < iconText.length; i += 1) {
 			iconText[i].style.display = 'inline';
 		}
 
 		var active;
 		
-		if(window.location.pathname.toString().includes("Master")){
-		 active = document.getElementsByClassName("active")[1];
-		 active.style.transform = "translateX(-20px)";
-		 active.style.paddingLeft= "20px";
-		} else{
+        if (window.location.pathname.toString().includes("Master")) {
+            active = document.getElementsByClassName("active")[1];
+            active.style.transform = "translateX(-20px)";
+            active.style.paddingLeft = "20px";
+        } else if (window.location.pathname.toString().includes("Security")) { 
+			active = document.getElementsByClassName("active")[0];
+			active.style.transform = "translateX(-20px)";
+			active.style.paddingLeft= "20px";
+		} else {
 			active = document.getElementsByClassName("active")[0];
 			active.style.transform = "translateX(-50px)";
 			active.style.paddingLeft= "42px";
@@ -233,11 +238,17 @@
 		active.style.paddingRight = "230px";
 		
 		var contentz = document.getElementsByClassName("contentz");
-		for (var i=0;i<contentz.length;i+=1){
+        for (var i = 0; i < contentz.length; i += 1) {
 			if(openMenu == "yes"){
 				contentz[i].style.display = 'block';	
-			} 
-			
+			}
+		}
+	
+		var contentzUser = document.getElementsByClassName("contentz-user");
+		for (var i=0;i<contentzUser.length;i+=1){
+			if(openMenuProfile == "yes"){
+				contentzUser[i].style.display = 'block';	
+			} 	
 		}
 	});
 
@@ -254,19 +265,20 @@
 		var active;
 		
 		if(window.location.pathname.toString().includes("Master")){
-		 active = document.getElementsByClassName("active")[1];
-		} else{
-			active = document.getElementsByClassName("active")[0];
+			active = document.getElementsByClassName("active")[1];
+			var contentz = document.getElementsByClassName("contentz");
+			for (var i=0;i<contentz.length;i+=1){
+				contentz[i].style.display = 'none';
+			}
+		} else if(window.location.pathname.toString().includes("Security")){
+			 active = document.getElementsByClassName("active")[0];
+			 var contentzUser = document.getElementsByClassName("contentz-user");
+			 contentzUser[0].style.display = 'none';
 		}
 
 		active.style.paddingRight = "0px";
 		active.style.transform = "translateX(-10px)";
 		active.style.paddingLeft= "0px";
-
-		var contentz = document.getElementsByClassName("contentz");
-		for (var i=0;i<contentz.length;i+=1){
-			contentz[i].style.display = 'none';
-		}
 	});
 
 	//colapse
@@ -281,6 +293,14 @@
 		for (var i = 0; i < master.length; i += 1) {
 			master[i].style.display = 'none';
 			openMenu = "yes";
+		}
+	}
+
+	if (window.location.pathname.toString().includes("Security")) {
+		var master = document.getElementsByClassName("contentz-user");
+		for (var i = 0; i < master.length; i += 1) {
+			master[i].style.display = 'none';
+			openMenuProfile = "yes";
 		}
 	}
 
