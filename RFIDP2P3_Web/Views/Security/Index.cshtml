@@ -15,9 +15,15 @@
         <hr>
         <form class="form-horizontal" id="submitSecurity">
             <div class="form-group form-material col-md-6">
+                <label class="col-sm-12 control-label">User ID</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="PIC_ID" value="@Context.Session.GetString("PIC_ID")" disabled />
+                </div>
+            </div>
+            <div class="form-group form-material col-md-6">
                 <label class="col-sm-12 control-label">User Name</label>
                 <div class="col-sm-12">
-                    <input type="text" class="form-control" id="PIC_ID" value="admin" disabled />
+                    <input type="text" class="form-control" id="PIC_Name" value="@Context.Session.GetString("PIC_Name")" disabled />
                 </div>
             </div>
             <div class="form-group form-material col-md-6">

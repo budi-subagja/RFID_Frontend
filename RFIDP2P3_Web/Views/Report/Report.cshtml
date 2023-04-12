@@ -1,0 +1,959 @@
+﻿
+@{
+    ViewData["Title"] = "Report Production";
+}
+
+<style>
+
+    .flex {
+        display: flex;
+    }
+
+    .k-grid-footer {
+        display: none;
+    }
+
+    .page-main {
+        margin-top: 50px;
+        margin-left: 30px;
+    }
+
+    .k-grid {
+        border-color: #fafafa;
+        font-size: 13px;
+    }
+
+    .k-toolbar {
+        background-color: white;
+    }
+
+    .k-grid-content {
+        height: 55vh;
+    }
+
+    .btn {
+        background-color: #325082;
+        color: white;
+    }
+
+    .green {
+        background-color: #1D6F42 !important;
+        color: white;
+    }
+
+    .spacew {
+        width: 10px;
+    }
+
+    /* The Modal (background) */
+    #myModal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        position: absolute;
+        float: left;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        width: 50%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    hr {
+        background-color: #aaaaaa !important;
+    }
+
+    @@media screen and (max-height: 1400px) {
+        .page-main {
+            margin-top: 10px;
+        }
+
+        .k-grid-content {
+            height: 45vh;
+        }
+    }
+</style>
+
+ <div id="example">
+        <div class="demo-section">
+                <div id="tabstrip">
+                    <ul>
+                        <li class="k-state-active">Summary</li>
+                        <li>Details</li>
+                        <li>Empty Pallet</li>
+                        <li>Buffer Stock</li>
+                        <li>Predelivery</li>
+                        <li>Delivery(C)</li>
+                        <li>Receiving</li>
+                        <li>Posting</li>
+                        <li>Delivery(E)</li>
+                        <li></li>
+                    </ul>
+
+                    
+                    <div class="page-main"> 
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Summary)</h4>
+		                    <hr>
+		                    <div id="grid1" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Details)</h4>
+		                    <hr>
+		                    <div id="grid2" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>                    
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Empty Pallet-Casting)</h4>
+		                    <hr>
+		                    <div id="grid3" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>                 
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Buffer Stock-Casting)</h4>
+		                    <hr>
+		                    <div id="grid4" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>               
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Predelivery-Casting)</h4>
+		                    <hr>
+		                    <div id="grid5" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>           
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Delivery-Casting)</h4>
+		                    <hr>
+		                    <div id="grid6" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>        
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Receiving-Engine)</h4>
+		                    <hr>
+		                    <div id="grid7" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>      
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Posting-Engine)</h4>
+		                    <hr>
+		                    <div id="grid8" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>    
+                    <div class="page-main">
+	                    <div class="page-content">
+		                    <h4 id="headerTittle">Report (Delivery-Engine)</h4>
+		                    <hr>
+		                    <div id="grid9" style="margin-top:5px; margin-bottom:5px;"></div>
+	                    </div>
+                    </div>
+                </div>
+        </div>
+
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+		
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green btnExcel" name="btnExcel">
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+		</button>
+		
+	</div>
+</script>
+    <style>
+		
+        #example {
+			/*tab atas*/
+            margin: 23px 0 0 0  ;
+            padding: 0;
+        }
+
+    </style>
+
+    <script>
+
+        $(document).ready(function() {
+            $("#tabstrip").kendoTabStrip({
+                animation:  {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+        });
+    </script>
+    
+<script>
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+			 $("#tabstrip").click(() => {
+				var tabStrip = $("#tabstrip").data("kendoTabStrip");
+				var selectId = "#grid" + tabStrip.select()[0].id.substr(-1);
+				loadGrid(o, selectId);
+			});
+		},
+		cacheDom: function () {
+			var o = this;
+		},
+		data: {
+			UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")"
+		},
+		dom: {},
+		eventHandlers: {
+			onClickBtnExcel: function(){
+				var o = this; 
+				var tabStrip = $("#tabstrip").data("kendoTabStrip");
+				var selectId = "#grid" + tabStrip.select()[0].id.substr(-1);
+				o.dom.$grid = $(selectId);
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			},
+			
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+			loadGrid(o, "#grid1");
+
+		},
+		initAfter: function () {
+			var o = this;
+			if (o.initAfterCalled) return;
+			o.initAfterCalled = true;
+			
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+
+	var xlsname = {	"#grid1":"reportSummary.xlsx",		"#grid2":"reportDetail.xlsx",		"#grid3":"reportEmptyPalet.xlsx",
+					"#grid4":"reportBufferStock.xlsx",	"#grid5":"reportPreDelivery.xlsx",	"#grid6":"reportDeliveryCasting.xlsx", 
+					"#grid7":"reportReceiving.xlsx",	"#grid8":"reportPosting.xlsx",		"#grid9":"reportDeliveryEngine.xlsx"
+				}
+	function getModelFields(gridx) {
+		switch (gridx) {
+			case '#grid9':
+				return {
+
+					fields: {
+						IDPallet: { type: 'string' },
+						DeliveryEDate: { type: 'string' },
+					}
+				}; break;
+			case '#grid8': 
+				return {
+					fields: {
+						IDPallet: { type: 'string' },
+						MaterialNo: { type: 'string' },
+						MaterialName: { type: 'string' },
+						MaterialDesc: { type: 'string' },
+						PostingDate: { type: 'string' }
+					} }; break;
+			case '#grid7': 
+				return {
+						fields: {
+							KanbanNo: {type: 'string'},
+							IDPallet: {type: 'string'},
+							DNNo: {type: 'string'},
+							ReceivingEDate: {type: 'string'}
+						} }; break;
+			case '#grid6': 
+				return {
+						fields: {
+							KanbanNo: {type: 'string'},
+							IDPallet: {type: 'string'},
+							DNNo: {type: 'string'},
+							DeliveryCDate: {type: 'string'}
+						} }; break;
+			case '#grid5': 
+				return {
+						fields: {
+							MaterialNo: {type: 'string'},
+							MaterialName: {type: 'string'},
+							MaterialDesc: {type: 'string'},
+							PairingDate: {type: 'string'},
+							KanbanNo: {type: 'string'},
+							IDPallet: {type: 'string'},
+							DNNo: {type: 'string'}
+						} }; break;
+			case '#grid4': 
+				return {
+						fields: {
+							IDPallet: {type: 'string'},
+							MaterialNo: {type: 'string'},
+							MaterialName: {type: 'string'},
+							MaterialDesc: {type: 'string'},
+							PairingDate: {type: 'string'}
+						} }; break;
+			case '#grid3': 
+				return {
+						fields: {
+							IDPallet: {type: 'string'},
+							ReceivingCDate: {type: 'string'}
+						} }; break;
+			case '#grid2': 
+				return {
+						id: "Production_Order_No",
+						fields: {
+							IDPallet: {type: 'string'},
+							DNNo: {type: 'string'},
+							EmptyPalletDate: {type: 'string'},
+							BufferStockDate: {type: 'string'},
+							PreDeliveryDate: {type: 'string'},
+							DeliveryCDate: {type: 'string'},
+							ReceivingEDate: {type: 'string'},
+							DeliveryEDate: {type: 'string'},
+							PostingDate: {type: 'string'}
+						} }; break;
+			default:
+				return {
+					fields: {
+						EmptyPalet: { type: 'string' },
+						BufferStock: { type: 'string' },
+						PreDelivery: { type: 'string' },
+						DeliveryCasting: { type: 'string' },
+						Receiving: { type: 'string' }, //number
+						Posting: { type: 'string' }, //date
+						DeliveryEngine: { type: 'string' }
+					}
+				}; break;
+		}
+	}
+	function getGridColumn(gridx) {
+		switch (gridx) {
+			case '#grid9': 
+				return [					
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{				
+						field: "DeliveryEDate",
+						title: "Delivery Date",
+						width: 120,
+						template: "<div class='customClass'> #= (DeliveryEDate == null) ? ' ' : kendo.toString(DeliveryEDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid8':
+				return [
+
+					{   
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},
+					{
+						field: "MaterialNo",
+						title: "Material No",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialNo == null) ? ' ' : kendo.toString(MaterialNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{				
+
+						field: "MaterialName",
+						title: "Material Name",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialName == null) ? ' ' : kendo.toString(MaterialName, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{ 
+						field: "MaterialDesc",
+						title: "Material Desc",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialDesc == null) ? ' ' : kendo.toString(MaterialDesc, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "PostingDate",
+						title: "Posting Date",
+						width: 80,
+						template: "<div class='customClass'> #= (PostingDate == null) ? ' ' : kendo.toString(PostingDate, '') # </div>",
+
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					}] ; break;
+			case '#grid7':
+				return [				
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{
+						field: "DNNo",
+						title: "DN Number",
+						width: 100,
+						template: "<div class='customClass'> #= (DNNo == null) ? ' ' : kendo.toString(DNNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "KanbanNo",
+						title: "Kanban No",
+						width: 100,
+						template: "<div class='customClass'> #= (KanbanNo == null) ? ' ' : kendo.toString(KanbanNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{				
+						field: "ReceivingEDate",
+						title: "Delivery Date",
+						width: 120,
+						template: "<div class='customClass'> #= (ReceivingEDate == null) ? ' ' : kendo.toString(ReceivingEDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid6':
+				return [					
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{
+						field: "DNNo",
+						title: "DN Number",
+						width: 100,
+						template: "<div class='customClass'> #= (DNNo == null) ? ' ' : kendo.toString(DNNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "KanbanNo",
+						title: "Kanban No",
+						width: 100,
+						template: "<div class='customClass'> #= (KanbanNo == null) ? ' ' : kendo.toString(KanbanNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{				
+						field: "DeliveryCDate",
+						title: "Delivery Date",
+						width: 120,
+						template: "<div class='customClass'> #= (DeliveryCDate == null) ? ' ' : kendo.toString(DeliveryCDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid5':
+				return [
+									
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "DNNo",
+						title: "DN Number",
+						width: 100,
+						template: "<div class='customClass'> #= (DNNo == null) ? ' ' : kendo.toString(DNNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "MaterialNo",
+						title: "Material Number",
+						width: 100,
+						template: "<div class='customClass'> #= (MaterialNo == null) ? ' ' : kendo.toString(MaterialNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},					
+					{
+						field: "MaterialName",
+						title: "Material Name",
+						width: 100,
+						template: "<div class='customClass'> #= (MaterialName == null) ? ' ' : kendo.toString(MaterialName, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},					
+					{
+						field: "MaterialDesc",
+						title: "Material Desc",
+						width: 100,
+						template: "<div class='customClass'> #= (MaterialDesc == null) ? ' ' : kendo.toString(MaterialDesc, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "KanbanNo",
+						title: "Kanban No",
+						width: 100,
+						template: "<div class='customClass'> #= (KanbanNo == null) ? ' ' : kendo.toString(KanbanNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},	
+					{				
+						field: "PairingDate",
+						title: "Pairing Date",
+						width: 120,
+						template: "<div class='customClass'> #= (PairingDate == null) ? ' ' : kendo.toString(PairingDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid4':
+				return [
+									
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "MaterialNo",
+						title: "Material Number",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialNo == null) ? ' ' : kendo.toString(MaterialNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},				
+					{
+						field: "MaterialName",
+						title: "Material Name",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialName == null) ? ' ' : kendo.toString(MaterialName, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},			
+					{
+						field: "MaterialDesc",
+						title: "Material Desc",
+						width: 120,
+						template: "<div class='customClass'> #= (MaterialDesc == null) ? ' ' : kendo.toString(MaterialDesc, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},
+					{				
+						field: "PairingDate",
+						title: "Pairing Date",
+						width: 120,
+						template: "<div class='customClass'> #= (PairingDate == null) ? ' ' : kendo.toString(PairingDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid3':
+				return [
+									
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},
+					{				
+
+						field: "ReceivingCDate",
+						title: "Receiving Date",
+						width: 120,
+						template: "<div class='customClass'> #= (ReceivingCDate == null) ? ' ' : kendo.toString(ReceivingCDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					}]; break;
+			case '#grid2':
+				return [
+									
+					{
+						field: "IDPallet",
+						title: "ID Pallet",
+						width: 120,
+						template: "<div class='customClass'> #= (IDPallet == null) ? ' ' : kendo.toString(IDPallet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},
+					{
+						field: "DNNo",
+						title: "DN No",
+						width: 120,
+						template: "<div class='customClass'> #= (DNNo == null) ? ' ' : kendo.toString(DNNo, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{//				
+
+						field: "EmptyPalletDate",
+						title: "Empty Pallet - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (EmptyPalletDate == null) ? ' ' : kendo.toString(EmptyPalletDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{
+						field: "BufferStockDate",
+						title: "Buffer Stock - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (BufferStockDate == null) ? ' ' : kendo.toString(BufferStockDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+
+					{
+						field: "PreDeliveryDate",
+						title: "Pre Delivery - Casting",
+						width: 80,
+						template: "<div class='customClass'> #= (PreDeliveryDate == null) ? ' ' : kendo.toString(PreDeliveryDate, '') # </div>",		
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "DeliveryCDate",
+						title: "Delivery - Casting",
+						width: 80,
+						template: "<div class='customClass'> #= (DeliveryCDate == null) ? ' ' : kendo.toString(DeliveryCDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{	
+						field: "ReceivingEDate",
+						title: "Receiving - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (ReceivingEDate == null) ? ' ' : kendo.toString(ReceivingEDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "DeliveryEDate",
+						title: "Delivery - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (DeliveryEDate == null) ? ' ' : kendo.toString(DeliveryEDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "PostingDate",
+						title: "Posting - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (PostingDate == null) ? ' ' : kendo.toString(PostingDate, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					}]; break;
+			default:
+				return [
+
+					{
+						field: "EmptyPalet",
+						title: "Empty Pallet - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (EmptyPalet == null) ? ' ' : kendo.toString(EmptyPalet, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+						groupHeaderTemplate: "#=value# ",
+					},
+					{
+						field: "BufferStock",
+						title: "Buffer Stock - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (BufferStock == null) ? ' ' : kendo.toString(BufferStock, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{//				
+
+						field: "PreDelivery",
+						title: "Pre Delivery - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (PreDelivery == null) ? ' ' : kendo.toString(PreDelivery, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{
+						field: "DeliveryCasting",
+						title: "Delivery - Casting",
+						width: 120,
+						template: "<div class='customClass'> #= (DeliveryCasting == null) ? ' ' : kendo.toString(DeliveryCasting, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "Receiving",
+						title: "Receiving - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (Receiving == null) ? ' ' : kendo.toString(Receiving, '') # </div>",
+
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "Posting",
+						title: "Posting - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (Posting == null) ? ' ' : kendo.toString(Posting, '') # </div>",
+
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "DeliveryEngine",
+						title: "Delivery - Engine",
+						width: 80,
+						template: "<div class='customClass'> #= (DeliveryEngine == null) ? ' ' : kendo.toString(DeliveryEngine, '') # </div>",
+
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					}]; break;
+		}
+	}
+	function loadGrid(o, gridx) {
+		o.dom.$grid = $(gridx);
+		o.dom.$grid.on('click', '.btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+		$("#headerTittle").html("Report (Summary)");
+		o.dom.$grid.kendoGrid({
+			excel:{
+				fileName:xlsname[gridx],
+				allPages:true,
+				filterable:true
+				},
+			excelExport: function(e){
+				excelFormat(e);
+			},
+			dataSource: {
+				transport: {
+					read: function (options) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/Report/INQ',
+							dataType: 'text',
+							data: JSON.stringify({
+								UserGroup_Id: o.data.UserGroup_Id,
+								ReportType:gridx
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							try {
+								var result = JSON.parse(data);
+								//$("#usergroupid").val(data);
+							}
+							catch (e) {
+								swal.fire('Error', 'Error loading grid', 'error');
+								options.success({ data: [] });
+								return;
+							}
+							options.success(result);
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+							options.success({ data: [] });
+						});
+					}
+				},
+				schema: {
+					model: getModelFields(gridx)
+				}
+			},
+			scrollable: true,
+			sortable: false,
+			resizable: true,
+			reorderable: true,
+			filterable: {
+				extra: false,
+				operators: {
+					string: {
+						contains: "Contains",
+						eq: "Equal to",
+						neq: "Not equal to"
+					}
+				}
+			},
+			refresh: true,
+			columns: getGridColumn(gridx),
+			toolbar: kendo.template($("#template_toolbar").html()),
+		});
+	}
+	function excelFormat(e) {
+	
+		var rows = e.workbook.sheets[0].rows;
+
+		for (var ri = 0; ri < rows.length; ri++){
+			var row = rows[ri];
+			if(row.type == 'group-footer'){
+				if(rows[ri].type == 'group-footer'){
+					for(var ci = 0; ci < row.cells.length; ci++){
+						var cell = row.cells[ci];
+
+						if(cell.value){
+							var s = $(cell.value).text();
+							if(s.match(/Cap.*/)){
+								cell.value = $(cell.value).text();
+							}else{
+								var str = $(cell.value).text();
+								var str1 = str.replace(".", "");
+								var str1 = str1.replace(",", ".");
+								cell.value = parseFloat(str1);
+							}
+							cell.hAlign = 'right';
+						}
+					}
+				}else{
+					for(var ci = 0; ci < row.cells.length; ci++){
+						var cell = row.cells[ci];
+
+						if(cell.value){
+							cell.value = $(cell.value).text();
+							cell.hAlign = 'right';
+						}
+					}
+				}
+			}
+									
+			if(row.type == 'footer'){
+				for(var ci = 0; ci < row.cells.length; ci++){
+					var cell = row.cells[ci];
+
+					if(cell.value){
+						var s = $(cell.value).text();
+						if(s.match(/Cap.*/)){
+							cell.value = $(cell.value).text();
+						}else{
+							var str = $(cell.value).text();
+							var str1 = str.replace(".", "");
+							var str1 = str1.replace(",", ".");
+							cell.value = parseFloat(str1);
+						}
+						cell.hAlign = 'right';
+					}
+				}
+			}
+		}
+	}
+</script>
+</div>

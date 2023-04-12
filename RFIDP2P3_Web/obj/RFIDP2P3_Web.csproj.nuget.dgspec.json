@@ -1,25 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj": {}
+    "C:\\MyFiles\\Matrix\\RFIDnewnew\\RFIDBAKAP\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj": {}
   },
   "projects": {
-    "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj": {
+    "C:\\MyFiles\\Matrix\\RFIDnewnew\\RFIDBAKAP\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
+        "projectUniqueName": "C:\\MyFiles\\Matrix\\RFIDnewnew\\RFIDBAKAP\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
         "projectName": "RFIDP2P3_Web",
-        "projectPath": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
+        "projectPath": "C:\\MyFiles\\Matrix\\RFIDnewnew\\RFIDBAKAP\\RFIDP2P3_Web\\RFIDP2P3_Web\\RFIDP2P3_Web.csproj",
         "packagesPath": "C:\\Users\\davin\\.nuget\\packages\\",
-        "outputPath": "E:\\Project\\Matrix\\Sourcetree-RFID\\RFIDP2P3_Web\\obj\\",
+        "outputPath": "C:\\MyFiles\\Matrix\\RFIDnewnew\\RFIDBAKAP\\RFIDP2P3_Web\\RFIDP2P3_Web\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\davin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\davin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\MyFiles\\Matrix\\RFID\\RFID Backend\\NugetGoreng": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,9 +41,13 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "BarCode": {
+              "target": "Package",
+              "version": "[2022.10.9871, )"
+            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[6.0.3, )"
+              "version": "[6.0.10, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -57,7 +64,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -69,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
         }
       }
     }

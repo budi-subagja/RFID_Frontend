@@ -17,7 +17,7 @@ namespace RFIDP2P3_Web.Controllers
         public async Task<IActionResult> Index(string username, string password)
         {
             HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            //clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
             // Pass the handler to httpclient(from you are calling api)
             HttpClient client = new HttpClient(clientHandler);
             string apiResponse;
@@ -66,28 +66,27 @@ namespace RFIDP2P3_Web.Controllers
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Login");
+            //HttpClientHandler clientHandler = new HttpClientHandler();
+            //clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            //HttpClient client = new HttpClient(clientHandler);
+            //string apiResponse;
 
-            HttpClientHandler clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
-            // Pass the handler to httpclient(from you are calling api)
-            HttpClient client = new HttpClient(clientHandler);
-            string apiResponse;
+            //using (client)
+            //{
+            //    User userLogin = new User();
+            //    userLogin.PIC_ID = "admin";
+            //    StringContent content = new StringContent(JsonConvert.SerializeObject(userLogin), Encoding.UTF8, "application/json");
 
-            using (client)
-            {
-                User userLogin = new User();
-                userLogin.PIC_ID = "admin";
-                StringContent content = new StringContent(JsonConvert.SerializeObject(userLogin), Encoding.UTF8, "application/json");
+            //    client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
 
-                client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
-
-                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Logout", content))
-                {
-                    apiResponse = await response.Content.ReadAsStringAsync();
-                    if (apiResponse != "success") return RedirectToAction("Index", "Home");
-                    else return RedirectToAction("Index", "Login");
-                }
-            }
+            //    using (var response = await client.PostAsync("https://localhost:7072/api/Login/Logout", content))
+            //    {
+            //        apiResponse = await response.Content.ReadAsStringAsync();
+            //        if (apiResponse != "success") return RedirectToAction("Index", "Home");
+            //        else return RedirectToAction("Index", "Login");
+            //    }
+            //}
         }
     }
 }

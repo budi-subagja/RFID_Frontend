@@ -48,3 +48,4 @@ Thumbs.db
 *.mov
 *.wmv
 
+/RFIDP2P3_Web/bin/Release/net6.0

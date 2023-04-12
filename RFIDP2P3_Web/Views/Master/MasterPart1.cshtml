@@ -1,0 +1,491 @@
+﻿
+@{
+    ViewData["Title"] = "Master Part";
+}
+
+<style>
+    .flex {
+        display: flex;
+    }
+
+    .k-grid-footer {
+        display: none;
+    }
+
+    .page-main {
+        margin-top: 100px;
+        margin-left: 30px;
+    }
+
+    .k-grid {
+        border-color: #fafafa;
+        font-size: 13px;
+    }
+
+    .k-toolbar {
+        background-color: white;
+    }
+
+    .k-grid-content {
+        height: 55vh;
+    }
+
+    .btn {
+        background-color: #325082;
+        color: white;
+    }
+
+    .green {
+        background-color: #1D6F42 !important;
+        color: white;
+    }
+
+    .spacew {
+        width: 10px;
+    }
+
+    /* The Modal (background) */
+    #myModal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        position: absolute;
+        float: left;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        width: 50%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    hr {
+        background-color: #aaaaaa !important;
+    }
+
+    @@media screen and (max-height: 1400px) {
+        .page-main {
+            margin-top: 70px;
+        }
+
+        .k-grid-content {
+            height: 45vh;
+        }
+    }
+</style>
+
+<div class="page-main">
+    <div class="page-content">
+        <h3>Master Part</h3>
+        <hr>
+        <div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="" role="document">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Add New Part</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <form class="form-horizontal" id="submitMasterPart">
+                                    <div class="flex">
+                                        <div class="form-group form-material col-md-6">
+                                            <label class="col-sm-10 control-label">Material No.</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="MaterialNo" required />
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-material col-md-6">
+                                            <label class="col-sm-10 control-label">Job No.</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="JobNo" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="form-group form-material col-md-6">
+                                            <label class="col-sm-10 control-label">Material Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="MaterialName" required />
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-material col-md-6">
+                                            <label class="col-sm-10 control-label">Material Desc.</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="MaterialDescription" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="form-group form-material col-md-6">
+                                            <label class="col-sm-10 control-label">Qty per Box</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="QtyPerBox" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var AppD = {
+        attachEvents: function () {
+            var o = this;
+
+            o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
+            o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+            
+			o.dom.$grid.on('click', '.btnUpdate', o.eventHandlers.onClickBtnUpdate.bind(o));
+            o.dom.$grid.on('click', '.btnDelete', o.eventHandlers.onClickBtnDelete.bind(o));
+        },
+        cacheDom: function () {
+            var o = this;
+            o.dom.$grid = $("#grid");
+            o.dom.inputs = {};
+            o.dom.inputs.$inputMaterialNo = $("#MaterialNo");
+            o.dom.inputs.$inputJobNo = $("#JobNo");
+            o.dom.inputs.$inputMaterialName = $("#MaterialName");
+            o.dom.inputs.$inputMaterialDescription = $("#MaterialDescription");
+            o.dom.inputs.$inputQtyPerBox = $("#QtyPerBox");
+        },
+        data: {},
+        dom: {},
+        eventHandlers: {
+
+            onClickBtnCreate: function () {
+                var o = this;
+                $("#myModalLabel").html("Add New Part");
+                o.dom.inputs.$inputMaterialNo.val('');
+                o.dom.inputs.$inputJobNo.val('');
+                o.dom.inputs.$inputMaterialName.val('');
+                o.dom.inputs.$inputMaterialDescription.val('');
+                o.dom.inputs.$inputQtyPerBox.val('');
+
+                var modal = document.getElementById("myModal");
+                modal.style.display = "block";
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+                var cancel = document.getElementById("btnCancel");
+                cancel.onclick = function () {
+                    modal.style.display = "none";
+                }
+            },
+			onClickBtnUpdate: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+                $("#myModalLabel").html("Edit Part");
+				o.dom.inputs.$inputMaterialNo.val(di.MaterialNo);
+				o.dom.inputs.$inputJobNo.val(di.JobNo);
+				o.dom.inputs.$inputMaterialName.val(di.MaterialName);
+				o.dom.inputs.$inputMaterialDescription.val(di.MaterialDescription);
+				o.dom.inputs.$inputQtyPerBox.val(di.QtyPerBox);
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+            onClickBtnDelete: function (e) {
+                var o = this;
+                var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+                swal.fire({
+                    title: 'Delete?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterPart/DEL',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                MaterialNo: di.MaterialNo
+                            })
+                        }).done(function (data, textStatus, jqXHR) {
+                            if (data !== 'success') {
+                                swal.fire('', data, 'error');
+                                return;
+                            }
+                            swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            o.dom.$grid.data('kendoGrid').dataSource.read();
+                        });
+                    }
+                });
+            },
+            onClickBtnExcel: function () {
+                var o = this;
+                o.dom.$grid.data('kendoGrid').saveAsExcel();
+            }
+        },
+        init: function () {
+            var o = this;
+            o.cacheDom();
+            o.attachEvents();
+            o.initElements();
+        },
+        initElements: function () {
+            var o = this;
+
+            o.dom.$grid.kendoGrid({
+                excel: {
+                    fileName: "Master Area.xlsx",
+                    allPages: true,
+                    filterable: true
+                },
+                dataSource: {
+                    transport: {
+                        read: function (options) {
+                            $.ajax({
+                                method: 'post',
+                                headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                                url: 'https://localhost:7072/api/MasterPart/INQ',
+                                dataType: 'text',
+                                data: {}
+                            }).done(function (data, textStatus, jqXHR) {
+                                try {
+                                    var result = JSON.parse(data);
+                                }
+                                catch (e) {
+                                    swal.fire('Error', 'Error loading grid', 'error');
+                                    options.success({ data: [] });
+                                    return;
+                                }
+                                options.success(result);
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                                options.success({ data: [] });
+                            });
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "MaterialNo",
+                            fields: {
+                                MaterialNo: { type: "string" },
+                                JobNo: { type: "string" },
+                                MaterialName: { type: "string" },
+                                MaterialDescription: { type: "string" },
+                                QtyPerBox: { type: "string" },
+                            }
+                        }
+                    },
+                    pageSize: 20
+                },
+                scrollable: true,
+                sortable: true,
+                resizable: true,
+                reorderable: true,
+                filterable: {
+                    extra: false,
+                    operators: {
+                        string: {
+                            contains: "Contains",
+                            eq: "Equal to",
+                            neq: "Not equal to"
+                        }
+                    }
+                },
+                pageable: {
+                    refresh: true,
+                    input: true,
+                    numeric: true,
+                    pageSizes: true,
+                    buttonCount: 5
+                },
+                columns: [
+                    
+                    @if(Context.Session.GetString("del_master_part") == "True")
+                    {
+                        <text>
+                        {
+                            width: 70,
+                            command: [{
+                                name: "Update",
+                                text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+                            }]
+                        },
+                        </text>
+                    }
+                    @if (Context.Session.GetString("del_master_part") == "True")
+                    {
+                        <text>
+                        {
+                            width: 70,
+                            command: [{
+                                name: "Delete",
+                                text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+                            }]
+                        },
+                        </text>
+                    }
+                    {
+							width: 70,
+							command: [{
+								name: "QR",
+								text: "<i class='fas fa-qrcode btnQR' title='QR Code' style='font-size:18px;'></i>"
+							}]
+					},
+                    {
+                        field: "MaterialNo",
+                        title: "Material Number",
+                        width: 120
+                    },
+                    {
+                        field: "JobNo",
+                        title: "Job Number",
+                        width: 120
+                    },
+                    {
+                        field: "MaterialName",
+                        title: "Material Name",
+                        width: 200
+                    },
+                    {
+                        field: "MaterialDescription",
+                        title: "Material Description",
+                        width: 240
+                    },
+                    {
+                        field: "QtyPerBox",
+                        title: "Qty Per Box",
+                        width: 100
+                    }],
+                toolbar: $("#template_toolbar").html(),
+            });
+
+            $("#submitMasterPart").submit(function (e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var MaterialNo = $("#MaterialNo").val();
+                var JobNo = $("#JobNo").val();
+                var MaterialName = $("#MaterialName").val();
+                var MaterialDescription = $("#MaterialDescription").val();
+                var QtyPerBox = $("#QtyPerBox").val();
+                swal.fire({
+                    title: "Save?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/MasterPart/INS',
+                            dataType: 'text',
+                            data: JSON.stringify({
+                                MaterialNo      : MaterialNo,
+                                JobNo           : JobNo,
+                                MaterialName    : MaterialName,
+                                MaterialDescription : MaterialDescription,
+                                QtyPerBox       : QtyPerBox,
+                                UserLogin       : "@Context.Session.GetString("PIC_ID")"
+                            })
+                        }).done(function (data, textStatus, jqXHR) {         
+                            if (data !== 'success') {
+                                swal.fire('Error', data, 'error');
+                                return;
+                            }
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "none";
+                            swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        }).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+                            $("#grid").data("kendoGrid").dataSource.read();
+                        });
+                    }
+                });
+            });
+        }
+    };
+
+    $(function () {
+        AppD.init();
+    });
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+    <div class="toolbar">
+    @if (Context.Session.GetString("add_master_part") == "True")
+    {
+                <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+                    <i class="k-icon k-i-plus"></i><span>Add New</span>
+                </button>
+                <div class = "spacew"></div>
+    }
+        <button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+            <i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+        </button>
+    </div>
+</script>

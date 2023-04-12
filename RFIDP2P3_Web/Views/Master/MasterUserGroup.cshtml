@@ -226,7 +226,6 @@
 							}
 							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
 						}).fail(function (jqXHR, textStatus, errorThrown) {
-							alert(jqXHR.responseText);
 							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
 							console.log(jqXHR);
 						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
@@ -335,7 +334,7 @@
 					buttonCount: 5
 				},
 				columns: [
-                @if(Context.Session.GetString("edit_master_user_group") == "1")
+                @if(Context.Session.GetString("edit_master_user_group") == "True")
                 {
                     <text>
                     {
@@ -347,7 +346,7 @@
                     },
                     </text>
                 }
-                @if (Context.Session.GetString("del_master_user_group") == "1")
+				@if (Context.Session.GetString("del_master_user_group") == "True")
                 {
                     <text>
                     {
@@ -423,7 +422,7 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
-        @if(Context.Session.GetString("add_master_user_group") == "1")
+	@if (Context.Session.GetString("add_master_user_group") == "True")
         {
             <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
                 <i class="k-icon k-i-plus"></i><span>Add New</span>

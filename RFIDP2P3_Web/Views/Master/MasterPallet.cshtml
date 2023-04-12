@@ -1,0 +1,510 @@
+﻿@{
+	ViewData["Title"] = "Master Pallet";
+}
+
+<style>
+	.flex {
+		display: flex;
+	}
+
+	.k-grid-footer {
+		display: none;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+		font-size: 13px;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.k-grid-content {
+		height: 55vh;
+	}
+
+	.btn {
+		background-color: #325082;
+		color: white;
+	}
+
+	.green {
+		background-color: #1D6F42 !important;
+		color: white;
+	}
+
+	.spacew {
+		width: 10px;
+	}
+
+	/* The Modal (background) */
+	#myModal {
+		display: none;
+		/* Hidden by default */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+		background-color: #fefefe;
+		position: absolute;
+		float: left;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		width: 50%;
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: #000;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+	hr {
+		background-color: #aaaaaa !important;
+	}
+
+	@@media screen and (max-width: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 45vh;
+		}
+
+		.modal-content {
+			width: 70%;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<h3>Master Pallet</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="" role="document">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Add Pallet</h4>
+					</div>
+					<div class="modal-body">
+						<div class="panel">
+							<div class="panel-body">
+								<form class="form-horizontal" id="submitForm">
+									<div class="flex">
+										<div class="form-group form-material col-md-4">
+											<label class="col-sm-10 control-label">Pallet Type</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="PalletTypeID" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">RFIDNo</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="RFIDNo" required />
+											</div>
+										</div>
+									</div>
+									<br />
+									<div>
+										<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+										<input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var DeptId = '0'; var IUType = 'I';
+
+
+	$("#PalletTypeID").kendoDropDownList({
+		template: '<span>#:data.PalletTypeID# - #:data.PalletTypeName#</span>',
+		valueTemplate: '<span>#:data.PalletTypeID# - #:data.PalletTypeName#</span>',
+		footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Plant found',
+		optionLabel: "select pallet type...",
+		dataValueField: "PalletTypeID",
+		dataSource: {
+			transport: {
+				read: function (options) {
+					$.ajax({
+						method: 'post',
+						headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+						url: 'https://localhost:7072/api/DropDown/INQ',
+						dataType: 'text', 
+						data: JSON.stringify({ Ftype: "PalletType", Plant: "" })
+					}).done(function (data, textStatus, jqXHR) {
+						try {
+							var result = JSON.parse(data);
+							console.log(data);
+						}
+						catch (e) {
+							swal.fire('Error', 'Error loading grid', 'error');
+							options.success({ data: [] });
+							return;
+						}
+						options.success(result);
+					}).fail(function (jqXHR, textStatus, errorThrown) {
+						swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						options.success({ data: [] });
+					});
+				}
+			}
+		},
+		change: function (e) {
+			var value = this.value();
+			//getShop(value);
+			// Use the value of the widget
+		}
+	}).data("kendoDropDownList");
+
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+
+			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
+			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+
+			o.dom.$grid.on('click', '.btnUpdate', o.eventHandlers.onClickBtnUpdate.bind(o));
+			o.dom.$grid.on('click', '.btnDelete', o.eventHandlers.onClickBtnDelete.bind(o));
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+			o.dom.inputs = {};
+			o.dom.inputs.$inputPalletTypeID = $("#PalletTypeID");
+			o.dom.inputs.$inputRFIDNo = $("#RFIDNo");
+		},
+		data: {},
+		dom: {},
+		eventHandlers: {
+			onClickBtnCreate: function () {
+				var o = this;
+
+				o.dom.inputs.$inputRFIDNo.attr('readonly', false);
+				$('#myModalLabel').html('Add Pallet');
+				DeptId = '0';
+				IUType = 'I';
+				o.dom.inputs.$inputRFIDNo.val('');
+				o.dom.inputs.$inputPalletTypeID.data("kendoDropDownList").value('');
+				
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+			onClickBtnDelete: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				swal.fire({
+					title: 'Delete?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterPallet/DEL',
+							dataType: 'text',
+							data: JSON.stringify({
+								RFIDNo: di.RFIDNo
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('', data, 'error');
+								return;
+							}
+							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			},
+			onClickBtnExcel: function () {
+				var o = this;
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			},
+			onClickBtnUpdate: function (e) {
+				var o = this;
+				o.dom.inputs.$inputRFIDNo.attr('readonly', true);
+				$('#myModalLabel').html('Edit Pallet');
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				o.dom.inputs.$inputRFIDNo.val(di.RFIDNo);
+				o.dom.inputs.$inputPalletTypeID.data("kendoDropDownList").value(di.PalletTypeID);
+				IUType = 'U';
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				excel: {
+					fileName: "Master Pallet.xlsx",
+					allPages: true,
+					filterable: true
+				},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterPallet/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserLogin: "@Context.Session.GetString("PIC_ID")"
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							id: "PIC_ID",
+							fields: {
+
+								RFIDNo: { type: "string" }, 
+								PalletTypeID: { type: "string" }, 
+								PalletTypeName: { type: "string" }, 
+								UserUpdate: { type: "string" }, 
+								DateUpdate: { type: "string" }, 
+								Remarks: { type: "string" }
+
+							}
+						}
+					},
+					pageSize: 20
+				},
+				scrollable: true,
+				sortable: true,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+				pageable: {
+					refresh: true,
+					input: true,
+					numeric: true,
+					pageSizes: true,
+					buttonCount: 5
+				},
+				columns: [
+	@if (Context.Session.GetString("edit_master_pallet") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Update",
+								text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+	@if (Context.Session.GetString("del_master_pallet") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Delete",
+								text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+					{
+						field: "RFIDNo",
+						title: "RFIDNo",
+						width: 50
+					},
+					{
+						field: "PalletTypeID",
+						title: "PalletType",
+						width: 150,
+						hidden: true
+					},
+					{
+						field: "PalletTypeName",
+						title: "Pallet",
+						width: 100
+					},
+					{
+						title: "Last Update",
+						columns: [
+							{
+								field: "UserUpdate",
+								title: "User",
+								width: 100
+							},
+							{
+								field: "DateUpdate",
+								title: "Date",
+								width: 100
+							}]
+					}],
+				toolbar: $("#template_toolbar").html(),
+			});
+
+			$("#submitForm").submit(function (e) {
+				e.preventDefault(); // avoid to execute the actual submit of the form.
+
+				var PalletTypeID = $("#PalletTypeID").val();
+				var RFIDNo = $("#RFIDNo").val();
+				swal.fire({
+					title: "Save?",
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterPallet/INS',
+							dataType: 'text',
+							data: JSON.stringify({
+								RFIDNo: RFIDNo,
+								PalletTypeID: PalletTypeID,
+								IUType: IUType,
+								UserLogin: "@Context.Session.GetString("PIC_ID")"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('Error', data, 'error');
+								return;
+							}
+							var modal = document.getElementById("myModal");
+							modal.style.display = "none";
+							swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+	@if (Context.Session.GetString("add_master_pallet") == "True")
+	{
+						<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+							<i class="k-icon k-i-plus"></i><span>Add New</span>
+						</button>
+						<div class = "spacew"></div>
+	}
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+		</button>
+	</div>
+</script>

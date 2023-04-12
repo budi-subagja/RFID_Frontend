@@ -1,0 +1,471 @@
+﻿
+@{
+    ViewData["Title"] = "Andon Bufferstock";
+}
+
+<style>
+
+    .flex {
+        display: flex;
+    }
+
+    .k-grid-footer {
+        display: none;
+    }
+
+    .page-main {
+        margin-top: 50px;
+        margin-left: 30px;
+    }
+
+    .k-grid {
+        border-color: #fafafa;
+        font-size: 13px;
+    }
+
+    .k-toolbar {
+        background-color: white;
+    }
+
+    .k-grid-content {
+        height: 55vh;
+    }
+
+    .btn {
+        background-color: #325082;
+        color: white;
+    }
+
+    .green {
+        background-color: #1D6F42 !important;
+        color: white;
+    }
+
+    .spacew {
+        width: 10px;
+    }
+
+    /* The Modal (background) */
+    #myModal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        position: absolute;
+        float: left;
+        left: 50%;
+        top: 50%;
+        transform: translate(-46%, -48%);
+        padding: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        width: 90%;
+        height: 95%;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    hr {
+        background-color: #aaaaaa !important;
+    }
+	
+    @@media screen and (max-height: 1400px) {
+        .page-main {
+            margin-top: 10px;
+        }
+
+        .k-grid-content {
+            height: 45vh;
+        }
+		
+		.img_home{
+			margin-top:-20px;
+			width:100%;
+			height:auto;
+		}
+    }
+
+	.bghome {
+		background-color: #eceff1;
+	}
+	
+	.img_home{
+		margin-top:-20px;
+		width:50%;
+		height:auto;
+	}
+	
+	.statistic {
+	  margin-bottom: 15px;
+	  padding: 10px;
+	}
+
+	.danger {
+	  background-color: #ffdddd;
+	  border-left: 6px solid #f44336;
+	}
+
+	.success {
+	  background-color: #ddffdd;
+	  border-left: 6px solid #04AA6D;
+	}
+
+	.info {
+	  background-color: #e7f3fe;
+	  border-left: 6px solid #2196F3;
+	}
+
+	.warning {
+	  background-color: #ffffcc;
+	  border-left: 6px solid #ffeb3b;
+	}
+</style>
+
+<!-- Page -->
+<div class="page-main">
+	<div class="page-content padding-10">
+		<div class="" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">
+						Andon Bufferstock</h4>
+				</div>
+				<div class="modal-body">
+					<div class="panel padding-10">
+						<div class="col-md-12 margin-top-10">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-00</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">10</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="success statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-green-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ddffdd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-01</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">20</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+												
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="info statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-blue-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#e7f3fe;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-02</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">30</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+												
+											</div>
+										</div>
+									</div> 
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 margin-top-10">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="warning statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-yellow-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffffcc;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-03</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">40</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+												
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-04</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">50</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+												
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-05</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">60</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+												
+											</div>
+										</div>
+									</div> 
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 margin-top-10">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-06</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">70</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>												
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-07</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">80</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>												
+											</div>
+										</div>
+									</div> 
+								</div>
+								<div class="col-md-4">
+									<div class="danger statistic">
+										<div class="widget margin-bottom-0">
+											<div class="pull-right white">
+												<i class="icon icon-circle margin-top-5 icon-2x md-assignment bg-red-600" aria-hidden="true"></i>
+											</div>
+											<div class="widget-content" style="background-color:#ffdddd;">
+												<div class="counter counter-md text-left">
+													<table>
+														<tr><td>
+															<div class="counter-label">
+																<div class="counter counter-sm text-left">
+																	<div class="counter-number-group">
+																		<div class="counter-number-related">Material Number</div>
+																		<div class="counter-number-related"><strong>87810-BZ160-08</strong></div>
+																	</div>
+																</div>
+															</div></td>
+														</tr>
+														<tr ><td></td>
+															<td rowspan="2">													
+																<strong><span class="counter-number" style="font-size:40px;margin-left:50px;vertical-align:center;">90</span></strong>
+															</td>
+														</tr>
+
+													</table>
+												</div>
+											</div>
+										</div>
+									</div> 
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

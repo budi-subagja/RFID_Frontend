@@ -1,0 +1,453 @@
+﻿@{
+	ViewData["Title"] = "Upload GR";
+}
+
+<style>
+	.flex {
+		display: flex;
+	}
+
+	.k-grid-footer {
+		display: none;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.spaceh {
+		height: 10px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+		font-size: 13px;
+	}
+
+	.k-grid-content {
+		height: 55vh;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.btn {
+		background-color: #325082;
+		color: white;
+	}
+
+	.green {
+		background-color: #1D6F42 !important;
+		color: white;
+	}
+
+	.spacew {
+		width: 10px;
+	}
+
+	/* The Modal (background) */
+	#myModal {
+		display: none;
+		/* Hidden by default */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+		background-color: #fefefe;
+		position: absolute;
+		float: left;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		width: 50%;
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+	hr {
+		background-color: #aaaaaa !important;
+	}
+
+	@@media screen and (max-height: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 45vh;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="" role="document">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Upload Excel</h4>
+					</div>
+
+					<div class="modal-body margin-bottom-0 padding-bottom-0">
+						<div class="panel">
+							<div class="panel-body">
+								<div class="form-group form-material col-md-6">
+									<form action="<?= hsc('index.php?' . encryptQS('type=app&controller=Home&action=upload')) ?>" method="post" enctype="multipart/form-data" class="dropzone" id="my-awesome-dropzone">
+										<div class="dz-message">
+											<h4>Drop files here or Click to upload</h4>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<h3>Upload GR</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+	</div>
+</div>
+
+<script>
+
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickbtnCreate.bind(o));
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+		},
+		data: {},
+		dom: {},
+		eventHandlers: {
+			onClickbtnCreate: function () {
+				var o = this;
+				
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+			onClickBtnExcel: function(){
+				var o = this;
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				excel:{
+					fileName:"GR Prod.xlsx",
+					allPages:true,
+					filterable:true
+					},
+				//excelExport: function(e){
+    //                excelFormat(e);
+				//},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/UploadProduction/INQ',
+								dataType: 'text',
+                                data: {}
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+                                    //$("#usergroupid").val(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', errorThrown + (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+
+							id: "Production_Order_No",
+							fields: {
+								Production_Order_No: {type: 'string'},
+								Material_Number: {type: 'string'},
+								Material_Name: {type: 'string'},
+								Material_Desc: {type: 'string'},
+								Material_Qty_Prod: {type: 'string'}, 
+								Posting_Date: {type: 'string'}, 
+								TCODE: {type: 'string'}, 
+								MOVEMENT: {type: 'string'}, 
+								NoPro: {type: 'string'}, 
+								TO: {type: 'string'}, 
+								Entry_Date: {type: 'string'},
+								Entry_User: {type: 'string'}
+							}
+						}
+					},
+					pageSize: 20
+				},
+				scrollable: true,
+				sortable: false,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+                pageable: {
+                    refresh: true,
+                    input: true,
+                    numeric: true,
+                    pageSizes: true,
+                    buttonCount: 5
+                },
+				columns: [
+					{
+						width: 70,
+						title: "QR",
+						command: [{
+							name: "QR",
+							text: "<i class='fas fa-qrcode btnQR' style='font-size:18px;'></i>"
+						}]
+					},
+					{
+						field: "Material_Number",
+						title: "Part Number",
+						width: 100,
+						template: "<div class='customClass'> #= (Material_Number == null) ? ' ' : kendo.toString(Material_Number, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{
+						field: "Material_Desc",
+						title: "Part Desc.",
+						width: 200,
+						template: "<div class='customClass'> #= (Material_Desc == null) ? ' ' : kendo.toString(Material_Desc, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "Material_Name",
+						title: "Part Name",
+						width: 200,
+						template: "<div class='customClass'> #= (Material_Name == null) ? ' ' : kendo.toString(Material_Name, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;"
+						},
+					},
+					{
+						field: "Material_Qty_Prod",
+						title: "Qty.",
+						width: 80,
+						template: "<div class='customClass'> #= (Material_Qty_Prod == null) ? ' ' : kendo.toString(Material_Qty_Prod, '') # </div>",
+						attributes: {
+							style: "font-size: 11px;",
+						},
+					},
+					{
+						field: "Posting_Date",
+						title: "Posting Date",
+						template: "<div class='customClass'> #= (Posting_Date == null) ? ' ' : kendo.toString(Posting_Date, '') # </div>",
+						width: 150,
+						attributes: {
+							style: "font-size: 11px;",
+						}
+					},
+					{
+						field: "TCODE",
+						title: "Posting TCODE",
+						template: "<div class='customClass'> #= (TCODE == null) ? ' ' : kendo.toString(TCODE, '') # </div>",
+						width: 150,
+						attributes: {
+							style: "font-size: 11px;",
+						}
+					},
+					{
+						field: "MOVEMENT",
+						title: "MOVEMENT",
+						template: "<div class='customClass'> #= (MOVEMENT == null) ? ' ' : kendo.toString(MOVEMENT, '') # </div>",
+						width: 150,
+						attributes: {
+							style: "font-size: 11px;",
+						}
+					},
+					{
+						field: "NoPro",
+						title: "NoPro",
+						template: "<div class='customClass'> #= (NoPro == null) ? ' ' : kendo.toString(NoPro, '') # </div>",
+						width: 150,
+						attributes: {
+							style: "font-size: 11px;",
+						}
+					},
+					{
+						field: "TO",
+						title: "TO",
+						template: "<div class='customClass'> #= (TO == null) ? ' ' : kendo.toString(TO, '') # </div>",
+						width: 150,
+						attributes: {
+							style: "font-size: 11px;",
+						}
+					}
+				],
+				toolbar: kendo.template($("#template_toolbar").html()),
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+
+//function excelFormat(e) {
+	
+//	var rows = e.workbook.sheets[0].rows;
+
+//	for (var ri = 0; ri < rows.length; ri++){
+//		var row = rows[ri];
+//		if(row.type == 'group-footer'){
+//			if(rows[ri].type == 'group-footer'){
+//				for(var ci = 0; ci < row.cells.length; ci++){
+//					var cell = row.cells[ci];
+
+//					if(cell.value){
+//						var s = $(cell.value).text();
+//						if(s.match(/Cap.*/)){
+//							cell.value = $(cell.value).text();
+//						}else{
+//							var str = $(cell.value).text();
+//							var str1 = str.replace(".", "");
+//							var str1 = str1.replace(",", ".");
+//							cell.value = parseFloat(str1);
+//						}
+//						cell.hAlign = 'right';
+//					}
+//				}
+//			}else{
+//				for(var ci = 0; ci < row.cells.length; ci++){
+//					var cell = row.cells[ci];
+
+//					if(cell.value){
+//						cell.value = $(cell.value).text();
+//						cell.hAlign = 'right';
+//					}
+//				}
+//			}
+//		}
+									
+//		if(row.type == 'footer'){
+//			for(var ci = 0; ci < row.cells.length; ci++){
+//				var cell = row.cells[ci];
+
+//				if(cell.value){
+//					var s = $(cell.value).text();
+//					if(s.match(/Cap.*/)){
+//						cell.value = $(cell.value).text();
+//					}else{
+//						var str = $(cell.value).text();
+//						var str1 = str.replace(".", "");
+//						var str1 = str1.replace(",", ".");
+//						cell.value = parseFloat(str1);
+//					}
+//					cell.hAlign = 'right';
+//				}
+//			}
+//		}
+//	}
+//}
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+		
+		<button data-toggle="tooltip" title="Upload Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs" id="btnCreate">
+			<i class="k-icon k-i-plus"></i><span>Upload Excel</span>
+		</button>&nbsp;
+		
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+		</button>
+		
+	</div>
+</script>
+
+
+
+
+
+

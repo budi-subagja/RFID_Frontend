@@ -1,0 +1,593 @@
+﻿@{
+	ViewData["Title"] = "Master GI P2";
+}
+
+<style>
+	.flex {
+		display: flex;
+	}
+
+	.k-grid-footer {
+		display: none;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+		font-size: 13px;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.k-grid-content {
+		height: 55vh;
+	}
+
+	.btn {
+		background-color: #325082;
+		color: white;
+	}
+
+	.green {
+		background-color: #1D6F42 !important;
+		color: white;
+	}
+
+	.spacew {
+		width: 10px;
+	}
+
+	/* The Modal (background) */
+	#myModal {
+		display: none;
+		/* Hidden by default */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+		background-color: #fefefe;
+		position: absolute;
+		float: left;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		width: 50%;
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: #000;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+	hr {
+		background-color: #aaaaaa !important;
+	}
+
+	@@media screen and (max-width: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 45vh;
+		}
+
+		.modal-content {
+			width: 70%;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<h3>Master GI P2</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="" role="document">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Add GI P2</h4>
+					</div>
+					<div class="modal-body">
+						<div class="panel">
+							<div class="panel-body">
+								<form class="form-horizontal" id="submitMasterUser">
+									<div class="flex">
+										<div class="form-group form-material col-md-3">
+											<label class="col-sm-10 control-label">Plant</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="PlantId" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-3">
+											<label class="col-sm-10 control-label">Shop</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="ShopId" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-3">
+											<label class="col-sm-10 control-label">Department</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="DeptId" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">Cost Center</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="CostCenter" />
+											</div>
+										</div>
+									</div>
+									<br />
+									<div>
+										<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+										<input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+
+			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
+			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+
+			o.dom.$grid.on('click', '.btnUpdate', o.eventHandlers.onClickBtnUpdate.bind(o));
+			o.dom.$grid.on('click', '.btnDelete', o.eventHandlers.onClickBtnDelete.bind(o));
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+			o.dom.inputs = {};
+			o.dom.inputs.$inputUserID = $("#User_Id");
+			o.dom.inputs.$inputName = $("#Name");
+			o.dom.inputs.$inputPassword = $("#Password");
+			o.dom.inputs.$inputUserGroup = $("#UserGroup_Id");
+			o.dom.inputs.$inputUserGroup1 = $("#UserGroup_Id1");
+			o.dom.inputs.$inputUserGroup2 = $("#UserGroup_Id2");
+		},
+		data: {},
+		dom: {},
+		eventHandlers: {
+			onClickBtnCreate: function () {
+				var o = this;
+				$('#myModalLabel').html('Add GI P2');
+				o.dom.inputs.$inputName.val('');
+				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value('');
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+			onClickBtnDelete: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				swal.fire({
+					title: 'Delete?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterUser/DEL',
+							dataType: 'text',
+							data: JSON.stringify({
+								PIC_ID: di.PIC_ID,
+								UserLogin: "@Context.Session.GetString("PIC_ID")"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('', data, 'error');
+								return;
+							}
+							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			},
+			onClickBtnExcel: function () {
+				var o = this;
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			},
+			onClickBtnUpdate: function (e) {
+				var o = this;
+				$('#myModalLabel').html('Edit GI P2');
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				o.dom.inputs.$inputName.val(di.PIC_Name);
+				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value(di.UserGroup_Id);
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				excel: {
+					fileName: "Master GI P2.xlsx",
+					allPages: true,
+					filterable: true
+				},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUser/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserLogin: "@Context.Session.GetString("PIC_ID")"
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							id: "GIP2Id",
+							fields: {								
+								GIP2Id: { type: "string" },
+								PlantId: { type: "string" },
+								PlantName: { type: "string" },
+								ShopId: { type: "string" },
+								ShopName: { type: "string" },
+								DeptId: { type: "string" },
+								DeptName: { type: "string" },
+								CostCenter: { type: "string" },
+								UserUpdate: { type: "string" },
+								DateUpdate: { type: "string" }
+							}
+						}
+					},
+					pageSize: 20
+				},
+				scrollable: true,
+				sortable: true,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+				pageable: {
+					refresh: true,
+					input: true,
+					numeric: true,
+					pageSizes: true,
+					buttonCount: 5
+				},
+				columns: [
+	@if (Context.Session.GetString("edit_master_gi_p2") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Update",
+								text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+	@if (Context.Session.GetString("del_master_gi_p2") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Delete",
+								text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+					{
+						field: "PlantId",
+						title: "Plant",
+						width: 50
+					},
+					{
+						field: "ShopName",
+						title: "Shop",
+						width: 200
+					},
+					{
+						field: "DeptName",
+						title: "Department",
+						width: 200
+					},
+					{
+						field: "CostCenter",
+						title: "Cost Center",
+						width: 100,
+						hidden: true
+					},
+					{
+						title: "Last Update",
+						columns: [
+							{
+								field: "UserUpdate",
+								title: "User",
+								width: 100
+							},
+							{
+								field: "DateUpdate",
+								title: "Date",
+								width: 100
+							}]
+					}],
+				toolbar: $("#template_toolbar").html(),
+			});
+
+			$("#UserGroup_Id1").kendoDropDownList({
+				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
+				optionLabel: "select user group...",
+				dataValueField: "UserGroup_Id",
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
+								dataType: 'text',
+								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					}
+				}
+			}).data("kendoDropDownList");
+			$("#UserGroup_Id2").kendoDropDownList({
+				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
+				optionLabel: "select user group...",
+				dataValueField: "UserGroup_Id",
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
+								dataType: 'text',
+								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					}
+				}
+			}).data("kendoDropDownList");
+			$("#UserGroup_Id").kendoDropDownList({
+				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
+				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
+				optionLabel: "select user group...",
+				dataValueField: "UserGroup_Id",
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
+								dataType: 'text',
+								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					}
+				}
+			}).data("kendoDropDownList");
+
+			$("#submitMasterUser").submit(function (e) {
+				e.preventDefault(); // avoid to execute the actual submit of the form.
+
+				var UID = document.getElementById("User_Id").value;
+				var Password = document.getElementById("Password").value;
+				var Name = document.getElementById("Name").value;
+				var UserGroup = document.getElementById("UserGroup_Id").value;
+
+				swal.fire({
+					title: "Save?",
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterUser/INS',
+							dataType: 'text',
+							data: JSON.stringify({
+								PIC_ID: UID,
+								PIC_Name: Name,
+								password: Password,
+								UserGroup_Id: UserGroup,
+								UserLogin: "@Context.Session.GetString("PIC_ID")"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('Error', data, 'error');
+								return;
+							}
+							var modal = document.getElementById("myModal");
+							modal.style.display = "none";
+							swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+	@if (Context.Session.GetString("add_master_gi_p2") == "True")
+	{
+						<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+							<i class="k-icon k-i-plus"></i><span>Add New</span>
+						</button>
+						<div class = "spacew"></div>
+	}
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+		</button>
+	</div>
+</script>

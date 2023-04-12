@@ -6,6 +6,9 @@
 		if (ctrName == ctr && actName == act) return "active";
 		else return "";
 	}
+	public string getUrlx(){
+		return "https://localhost:7072/api/";
+	}
 }
 
 <!DOCTYPE html>
@@ -19,6 +22,8 @@
 	<link rel="stylesheet" href="~/css/Main.css"/>
 
 	<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+	<script src="~/js/jspdf.debug.js"></script>
+	<script src="~/js/jquery.qrcode.min.js"></script>
 
 	<link rel="stylesheet" href="~/lib/fontawesome/css/all.css" />
 	
@@ -36,6 +41,7 @@
 	
 	<link rel="stylesheet" href="~/css/Material-Icons.css" />
 	<link rel="icon" href="~/img/icon.png" />
+
 </head>
 
 <body>
@@ -52,7 +58,7 @@
 				<div class="flex-inline flexstart"><div class="username"><b>@Context.Session.GetString("PIC_Name")</b></div></div>
 			</button>
 			<div class="contentz-user">
-				@if(Context.Session.GetString("read_password") == "1")
+				@if(Context.Session.GetString("read_password") == "True")
 				{
 					<div class="rounded">
 						<a asp-controller="Security" asp-action="Index" class="@getClass("Security", "Index")">
@@ -78,18 +84,20 @@
 				</a>
 			</button>
 
-			@if (Context.Session.GetString("read_master_user_group") == "1" ||
-					Context.Session.GetString("read_master_user_priv") == "1" ||
-					Context.Session.GetString("read_master_user") == "1" ||
-					Context.Session.GetString("read_master_shop") == "1" ||
-					Context.Session.GetString("read_master_gate_group") == "1" ||
-					Context.Session.GetString("read_master_gate") == "1" ||
-					Context.Session.GetString("read_master_area") == "1" ||
-					Context.Session.GetString("read_master_supplier") == "1" ||
-					Context.Session.GetString("read_master_box_type") == "1" ||
-					Context.Session.GetString("read_master_rfid") == "1" ||
-					Context.Session.GetString("read_master_transporter") == "1" ||
-					Context.Session.GetString("read_master_news") == "1")
+			@if (Context.Session.GetString("read_master_user_group") == "True" ||
+					Context.Session.GetString("read_master_user_priv") == "True" ||
+					Context.Session.GetString("read_master_user") == "True"||
+					Context.Session.GetString("read_master_part") == "True"||
+					Context.Session.GetString("read_master_plant") == "True"||
+					Context.Session.GetString("read_master_gedung") == "True"||
+					Context.Session.GetString("read_master_line") == "True"||
+					Context.Session.GetString("read_master_shift") == "True"||
+					Context.Session.GetString("read_master_pallet") == "True"||
+					Context.Session.GetString("read_master_gi_p2") == "True"||
+					Context.Session.GetString("read_master_gi_p3") == "True"||
+					Context.Session.GetString("read_master_department") == "True"||
+					Context.Session.GetString("read_master_section") == "True"||
+					Context.Session.GetString("read_master_shop") == "True")
 			{
 				<button class="collapsible">
 					<a id="master">
@@ -98,7 +106,7 @@
 					</a>
 				</button>
 				<div class="contentz">
-					@if (Context.Session.GetString("read_master_user_group") == "1")
+					@if (Context.Session.GetString("read_master_user_group") == "True")
 					{
 						<div class="rounded">
 							<a asp-controller="Master" asp-action="MasterUserGroup" class="@getClass("Master", "MasterUserGroup")">
@@ -106,7 +114,7 @@
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_user_priv") == "1")
+					@if (Context.Session.GetString("read_master_user_priv") == "True")
 					{
 						<div class="rounded">
 							<a asp-controller="Master" asp-action="MasterPrivilege" class="@getClass("Master", "MasterPrivilege")">
@@ -114,7 +122,7 @@
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_user") == "1")
+					@if (Context.Session.GetString("read_master_user") == "True")
 					{
 						<div class="rounded">
 							<a asp-controller="Master" asp-action="MasterUser" class="@getClass("Master", "MasterUser")">
@@ -122,79 +130,137 @@
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_shop") == "1")
+					@if (Context.Session.GetString("read_master_plant") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
+							<a asp-controller="Master" asp-action="MasterPlant" class="@getClass("Master", "MasterPlant")">
+								<span class="icon-text">&nbsp;Master Plant</span>
+							</a>
+						</div>
+					}
+					@if (Context.Session.GetString("read_master_gedung") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Master" asp-action="MasterGedung" class="@getClass("Master", "MasterGedung")">
+								<span class="icon-text">&nbsp;Master Gedung</span>
+							</a>
+						</div>
+					}
+					@if (Context.Session.GetString("read_master_line") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Master" asp-action="MasterLine" class="@getClass("Master", "MasterLine")">
+								<span class="icon-text">&nbsp;Master Line</span>
+							</a>
+						</div>
+					}
+					@if (Context.Session.GetString("read_master_shop") == "True")
+					{
+						<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterShop" class="@getClass("Master", "MasterShop")">
 								<span class="icon-text">&nbsp;Master Shop</span>
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_gate_group") == "1")
+					@if (Context.Session.GetString("read_master_department") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterGateGroup" class="@getClass("Master", "MasterGateGroup")">
-								<span class="icon-text">&nbsp;Master Gate Group</span>
+							<a asp-controller="Master" asp-action="MasterDepartment" class="@getClass("Master", "MasterDepartment")">
+								<span class="icon-text">&nbsp;Master Department</span>
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_gate") == "1")
+					@if (Context.Session.GetString("read_master_section") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterGate" class="@getClass("Master", "MasterGate")">
-								<span class="icon-text">&nbsp;Master Gate</span>
+							<a asp-controller="Master" asp-action="MasterSection" class="@getClass("Master", "MasterSection")">
+								<span class="icon-text">&nbsp;Master Section</span>
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_area") == "1")
+					@if (Context.Session.GetString("read_master_shift") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterArea" class="@getClass("Master", "MasterArea")">
-								<span class="icon-text">&nbsp;Master Area</span>
+							<a asp-controller="Master" asp-action="MasterShift" class="@getClass("Master", "MasterShift")">
+								<span class="icon-text">&nbsp;Master Shift</span>
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_supplier") == "1")
+					@if (Context.Session.GetString("read_master_pallet") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterSupplier" class="@getClass("Master", "MasterSupplier")">
-								<span class="icon-text">&nbsp;Master Supplier</span>
+							<a asp-controller="Master" asp-action="MasterPallet" class="@getClass("Master", "MasterPallet")">
+								<span class="icon-text">&nbsp;Master Pallet</span>
+							</a>
+						</div>
+				}
+				@if (Context.Session.GetString("read_master_part") == "True")
+				{
+					<div class="rounded">
+						<a asp-controller="Master" asp-action="MasterPart" class="@getClass("Master", "MasterPart")">
+							<span class="icon-text">&nbsp;Master Material</span>
+						</a>
+					</div>
+				}
+					@if (Context.Session.GetString("read_master_gi_p2") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Master" asp-action="MasterGIP2" class="@getClass("Master", "MasterGIP2")">
+								<span class="icon-text">&nbsp;Master GI P2</span>
 							</a>
 						</div>
 					}
-					@if (Context.Session.GetString("read_master_box_type") == "1")
+					@if (Context.Session.GetString("read_master_gi_p3") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterBoxType" class="@getClass("Master", "MasterBoxType")">
-								<span class="icon-text">&nbsp;Master Box Type</span>
+							<a asp-controller="Master" asp-action="MasterGIP3" class="@getClass("Master", "MasterGIP3")">
+								<span class="icon-text">&nbsp;Master GI P3</span>
 							</a>
 						</div>
-					}
-					@if (Context.Session.GetString("read_master_rfid") == "1")
+					}				 
+				</div>
+			}
+			@if (Context.Session.GetString("read_report") == "True"){
+				<button class="collapsible">
+					<a id="report">
+						<i class="material-icons">report</i>
+						<span class="icon-text"><b>Report</b></span>
+					</a>
+				</button>
+				<div class="contenreport" style="margin-left:90px">
+					@if (Context.Session.GetString("read_report") == "True")
 					{
 						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterRFID" class="@getClass("Master", "MasterRFID")">
-								<span class="icon-text">&nbsp;Master RFID</span>
+							<a asp-controller="Report" asp-action="Report" class="@getClass("Report", "Report")">
+								<span class="icon-text">&nbsp;Report</span>
 							</a>
 						</div>
-					}
-					@if (Context.Session.GetString("read_master_transporter") == "1")
-					{
-						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterTransporter" class="@getClass("Master", "MasterTransporter")">
-								<span class="icon-text">&nbsp;Master Transporter</span>
-							</a>
-						</div>
-					}
-					@if (Context.Session.GetString("read_master_news") == "1")
-					{
-						<div class="rounded">
-							<a asp-controller="Master" asp-action="MasterNews" class="@getClass("Master", "MasterNews")">
-								<span class="icon-text">&nbsp;Master News</span>
-							</a>
-						</div>
+
 					}
 				</div>
+				@*
+				<div class="contenreport" style="margin-left:90px">
+					@if (Context.Session.GetString("read_AndonBufferStock") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Report" asp-action="AndonBufferStock" class="@getClass("Report", "AndonBufferStock")">
+								<span class="icon-text">&nbsp;Andon Buffer Stock</span>
+							</a>
+						</div>
+
+					}
+				</div>
+				<div class="contenreport" style="margin-left:90px">
+					@if (Context.Session.GetString("read_UploadGR") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Report" asp-action="UploadGR" class="@getClass("Report", "UploadGR")">
+								<span class="icon-text">&nbsp;Upload GR</span>
+							</a>
+						</div>
+
+					}
+				</div>*@
 			}
 			<div class="padding">
 			</div>	
@@ -227,6 +293,10 @@
             active.style.paddingLeft = "20px";
         } else if (window.location.pathname.toString().includes("Security")) { 
 			active = document.getElementsByClassName("active")[0];
+			active.style.transform = "translateX(-20px)";
+			active.style.paddingLeft= "20px";
+		}else if (window.location.pathname.toString().includes("Report")) { 
+			active = document.getElementsByClassName("active")[2];
 			active.style.transform = "translateX(-20px)";
 			active.style.paddingLeft= "20px";
 		} else {
@@ -292,7 +362,7 @@
 		var master = document.getElementsByClassName("contentz");
 		for (var i = 0; i < master.length; i += 1) {
 			master[i].style.display = 'none';
-			openMenu = "yes";
+			openMenu = "no";
 		}
 	}
 
@@ -300,7 +370,7 @@
 		var master = document.getElementsByClassName("contentz-user");
 		for (var i = 0; i < master.length; i += 1) {
 			master[i].style.display = 'none';
-			openMenuProfile = "yes";
+			openMenuProfile = "no";
 		}
 	}
 
@@ -312,7 +382,7 @@
 				openMenu = "no";
 			} else {
 				content.style.display = "block";
-				openMenu = "yes";
+				openMenu = "no";
 			}
 		});
 	}

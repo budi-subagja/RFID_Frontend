@@ -1,0 +1,144 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<div class="body">
+  <div class="textTop">
+    <span>
+      <h1 class="white">ANDON PRE-DELIVERY</h1>
+    </span>
+  </div>
+  <div class="center">
+    <div class="flex">
+      <div class="container">
+        <span>
+          <h3>TOTAL PALLET (09/11/22)</h3>
+        </span>
+        <span>
+          <div class="huge">129</div>
+        </span>
+      </div>
+      <div class="whitespace"></div>
+      <div class="container2" id="container2">
+        <span>
+          <div class="bold middle fixed">LIST DN COMPLETE</div>
+        </span>
+        <span>
+          <div id="list" class="list middle" style="margin-top: 60px;"></div>
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+  html {
+    background-color: black;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .body {
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .white {
+    color: white;
+  }
+
+  .huge {
+    font-size: 12rem;
+    font-weight: 600;
+  }
+
+  .bold {
+    font-weight: 700;
+  }
+
+  .semi-bold {
+    font-weight: 500;
+  }
+
+  .fixed{
+    position: fixed;
+    background-color: white;
+    width: 30%;
+    height: 6%;
+  }
+
+  .middle {
+    font-size: 1.3rem;
+  }
+
+  .flex {
+    display: flex;
+    justify-content: center;
+
+  }
+
+  .container {
+    position: absolute;
+    left: 15%;
+    top: 10%;
+    text-align: center;
+    background-color: white;
+    padding: 0 2rem;
+  }
+
+  .container span {
+    display: block;
+  }
+
+  .whitespace {
+    width: 2vw;
+  }
+
+  .container2 {
+    position: absolute;
+    right: 10%;
+    top: 10%;
+    background-color: white;
+    padding-right: 20rem;
+    height: 85vh;
+    overflow: auto;
+    width: 18vw;
+  }
+
+  .list {
+  
+    margin-top: 20px;
+  }
+</style>
+
+<script>
+
+  $('document').ready(function () {
+    setInterval(function () { getData() }, 1000); // panggil setiap 1 detik
+  });
+
+  var counter = 1;
+  var messageBody = document.querySelector('#container2');
+  function getData() {
+    
+messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+    $.ajax({
+      url: "https://retoolapi.dev/pSi6he/data",
+      type: "GET",
+      dataType: 'text',
+      success: function (data) {
+        var result = JSON.parse(data);
+        if (typeof result[counter] === 'undefined') {
+
+        } else {
+          var completelist = document.getElementById("list");
+          //completelist.innerHTML += "<ul><li>name: " + result[counter].name + "</li><li>name: " + result[counter].giftName + "</li> </ul>";
+          completelist.innerHTML += "" + counter + ". DN NUMBER NEW <br>";
+          counter++;
+
+        }
+
+      }
+    });
+  }
+</script>

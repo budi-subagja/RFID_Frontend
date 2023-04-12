@@ -274,19 +274,19 @@
 					width: 80,
 					field: "checkedbox_add",
 					title: "Add",
-					template:'#if(data.Menu_Id!=="password"&&data.Menu_Id!=="master_user_priv"){ # <input type="checkbox" #: checkedbox_add ? "checked" : "" # class="checkbox checkbox_add"> #}#',
+					template:'#if(data.Menu_Id!=="1"&&data.Menu_Id!=="3"){ # <input type="checkbox" #: checkedbox_add ? "checked" : "" # class="checkbox checkbox_add"> #}#',
 				},
 				{
 					width: 80,
 					field: "checkedbox_edit",
 					title: "Edit",
-					template:'#if(data.Menu_Id!=="master_area"&&data.Menu_Id!=="master_box_type"&&data.Menu_Id!=="master_gate_group"&&data.Menu_Id!=="master_gate"&&data.Menu_Id!=="master_news"&&data.Menu_Id!=="master_shop"&&data.Menu_Id!=="master_transporter"){ # <input type="checkbox" #: checkedbox_edit ? "checked" : "" # class="checkbox checkbox_edit"> #}#',
+					template: '#if(data.Menu_Id!=""){ # <input type="checkbox" #: checkedbox_edit ? "checked" : "" # class="checkbox checkbox_edit"> #}#',
 				},
 				{
 					width: 80,
 					field: "checkedbox_del",
 					title: "Delete",
-					template:'#if(data.Menu_Id!=="password"&&data.Menu_Id!=="master_user_priv"){ # <input type="checkbox" #: checkedbox_del ? "checked" : "" # class="checkbox checkbox_del"> #}#',
+						template: '#if(data.Menu_Id!=="1"&&data.Menu_Id!=="3"){ # <input type="checkbox" #: checkedbox_del ? "checked" : "" # class="checkbox checkbox_del"> #}#',
 				}],
 				toolbar: kendo.template($("#template_toolbar").html()),
 				dataBound: function (e) {
@@ -365,7 +365,7 @@
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
 		<input type="text" name="usergroupid" id="usergroupid" value="" placeholder = "search">
-		@if(Context.Session.GetString("edit_master_user_priv") == "1") 
+		@if(Context.Session.GetString("edit_master_user_priv") == "True") 
 		{
             <div class = "spacew"></div>
 			<button class="k-button" id="btnSave" type="button">Save</button>

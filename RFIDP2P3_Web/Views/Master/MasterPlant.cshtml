@@ -1,0 +1,486 @@
+﻿@{
+	ViewData["Title"] = "Master Plant";
+}
+
+<style>
+	.flex {
+		display: flex;
+	}
+
+	.k-grid-footer {
+		display: none;
+	}
+
+	.page-main {
+		margin-top: 100px;
+		margin-left: 30px;
+	}
+
+	.k-grid {
+		border-color: #fafafa;
+		font-size: 13px;
+	}
+
+	.k-toolbar {
+		background-color: white;
+	}
+
+	.k-grid-content {
+		height: 55vh;
+	}
+
+	.k-grid-header .k-header {
+		height: 10px;
+		padding: 0;
+	}
+
+	.btn {
+		background-color: #325082;
+		color: white;
+	}
+
+	.green {
+		background-color: #1D6F42 !important;
+		color: white;
+	}
+
+	.spacew {
+		width: 10px;
+	}
+
+	/* The Modal (background) */
+	#myModal {
+		display: none;
+		/* Hidden by default */
+		position: fixed;
+		/* Stay in place */
+		z-index: 1;
+		/* Sit on top */
+		padding-top: 100px;
+		/* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%;
+		/* Full width */
+		height: 100%;
+		/* Full height */
+		overflow: auto;
+		/* Enable scroll if needed */
+		background-color: rgb(0, 0, 0);
+		/* Fallback color */
+		background-color: rgba(0, 0, 0, 0.4);
+		/* Black w/ opacity */
+	}
+
+	/* Modal Content */
+	.modal-content {
+		background-color: #fefefe;
+		position: absolute;
+		float: left;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		padding: 20px;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		width: 50%;
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: #000;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+	hr {
+		background-color: #aaaaaa !important;
+	}
+
+	@@media screen and (max-width: 1400px) {
+		.page-main {
+			margin-top: 70px;
+		}
+
+		.k-grid-content {
+			height: 45vh;
+		}
+
+		.modal-content {
+			width: 70%;
+		}
+	}
+</style>
+
+<div class="page-main">
+	<div class="page-content">
+		<h3>Master Plant</h3>
+		<hr>
+		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
+		<!-- The Modal -->
+		<div id="myModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="" role="document">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Add Plant</h4>
+					</div>
+					<div class="modal-body">
+						<div class="panel">
+							<div class="panel-body">
+								<form class="form-horizontal" id="submitMasterPlant">
+									<div class="flex">
+										<div class="form-group form-material col-md-2">
+											<label class="col-sm-10 control-label">&nbsp;</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="PlantID" required title="Plant Initial" placeholder="Initial" />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">&nbsp;</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="PlantName" title="Plant" placeholder="Plant Name" />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-2">
+											<label class="col-sm-10 control-label">&nbsp;</label>
+											<div class="col-sm-10">
+												<input class="form-control" id="Sloc" required title="Sloc" placeholder="Sloc" />
+											</div>
+										</div>
+									</div>
+									<br />
+									<div>
+										<button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
+										<input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var IU = 'I';
+	var AppD = {
+		attachEvents: function () {
+			var o = this;
+
+			o.dom.$grid.on('click', '#btnCreate', o.eventHandlers.onClickBtnCreate.bind(o));
+			o.dom.$grid.on('click', '#btnExcel', o.eventHandlers.onClickBtnExcel.bind(o));
+
+			o.dom.$grid.on('click', '.btnUpdate', o.eventHandlers.onClickBtnUpdate.bind(o));
+			o.dom.$grid.on('click', '.btnDelete', o.eventHandlers.onClickBtnDelete.bind(o));
+		},
+		cacheDom: function () {
+			var o = this;
+			o.dom.$grid = $("#grid");
+			o.dom.inputs = {};
+			o.dom.inputs.$inputPlantID = $("#PlantID");
+			o.dom.inputs.$inputPlantName = $("#PlantName");
+			o.dom.inputs.$inputSloc = $("#Sloc");
+		},
+		data: {},
+		dom: {},
+		eventHandlers: {
+			onClickBtnCreate: function () {
+				var o = this; IU = 'I';
+
+				document.getElementById("PlantID").disabled = false;
+				$('#myModalLabel').html('Add Plant');
+				o.dom.inputs.$inputPlantID.val('');
+				o.dom.inputs.$inputPlantName.val('');
+				o.dom.inputs.$inputSloc.val('');
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			},
+			onClickBtnDelete: function (e) {
+				var o = this;
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				swal.fire({
+					title: 'Delete?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterPlant/DEL',
+							dataType: 'text',
+							data: JSON.stringify({
+								PlantID: di.PlantID,
+								UserLogin: "@Context.Session.GetString("PlantID")"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('', data, 'error');
+								return;
+							}
+							swal.fire({ title: 'Success', text: 'Data deleted', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			},
+			onClickBtnExcel: function () {
+				var o = this;
+				o.dom.$grid.data('kendoGrid').saveAsExcel();
+			},
+			onClickBtnUpdate: function (e) {
+				var o = this; IU = 'U';
+				$('#myModalLabel').html('Edit Plant');
+				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
+
+				o.dom.inputs.$inputPlantID.val(di.PlantID);
+				o.dom.inputs.$inputPlantName.val(di.PlantName);
+				o.dom.inputs.$inputSloc.val(di.Sloc);
+
+				document.getElementById("PlantID").disabled = true;
+
+				var modal = document.getElementById("myModal");
+				modal.style.display = "block";
+				window.onclick = function (event) {
+					if (event.target == modal) {
+						modal.style.display = "none";
+					}
+				}
+				var cancel = document.getElementById("btnCancel");
+				cancel.onclick = function () {
+					modal.style.display = "none";
+				}
+			}
+		},
+		init: function () {
+			var o = this;
+			o.cacheDom();
+			o.attachEvents();
+			o.initElements();
+		},
+		initElements: function () {
+			var o = this;
+
+			o.dom.$grid.kendoGrid({
+				excel: {
+					fileName: "Master Plant.xlsx",
+					allPages: true,
+					filterable: true
+				},
+				dataSource: {
+					transport: {
+						read: function (options) {
+							$.ajax({
+								method: 'post',
+								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+								url: 'https://localhost:7072/api/MasterPlant/INQ',
+								dataType: 'text',
+								data: JSON.stringify({
+									UserLogin: "@Context.Session.GetString("PlantID")"
+								})
+							}).done(function (data, textStatus, jqXHR) {
+								try {
+									var result = JSON.parse(data);
+								}
+								catch (e) {
+									swal.fire('Error', 'Error loading grid', 'error');
+									options.success({ data: [] });
+									return;
+								}
+								options.success(result);
+							}).fail(function (jqXHR, textStatus, errorThrown) {
+								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+								options.success({ data: [] });
+							});
+						}
+					},
+					schema: {
+						model: {
+							id: "PlantID",
+							fields: {
+
+								PlantID: { type: "string" },
+								PlantName: { type: "string" },
+								Sloc: { type: "string" },
+								UserLogin: { type: "string" },
+								LastUpdate: { type: "string" },
+								UserUpdate: { type: "string" },
+								Remarks: { type: "string" },
+							}
+						}
+					},
+					pageSize: 20
+				},
+				scrollable: true,
+				sortable: true,
+				resizable: true,
+				reorderable: true,
+				filterable: {
+					extra: false,
+					operators: {
+						string: {
+							contains: "Contains",
+							eq: "Equal to",
+							neq: "Not equal to"
+						}
+					}
+				},
+				pageable: {
+					refresh: true,
+					input: true,
+					numeric: true,
+					pageSizes: true,
+					buttonCount: 5
+				},
+				columns: [
+	@if (Context.Session.GetString("edit_master_plant") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Update",
+								text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+	@if (Context.Session.GetString("del_master_plant") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Delete",
+								text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+					{
+						field: "PlantID",
+						title: "Plant Initial",
+						width: 50
+					},
+					{
+						field: "PlantName",
+						title: "Plant Name",
+						width: 200
+					},
+					{
+						field: "Sloc",
+						title: "Sloc",
+						width: 100,
+						//hidden: true
+					},
+					{
+						title: "Last Update",
+						columns: [
+							{
+								field: "UserUpdate",
+								title: "User",
+								width: 100
+							},
+							{
+								field: "LastUpdate",
+								title: "Date",
+								width: 100
+							}]
+					}],
+				toolbar: $("#template_toolbar").html(),
+			});
+
+			$("#submitMasterPlant").submit(function (e) {
+				e.preventDefault(); // avoid to execute the actual submit of the form.
+
+				var Sloc = $("#Sloc").val();
+				var PlantName = $("#PlantName").val();
+				var PlantID = $("#PlantID").val();
+
+				swal.fire({
+					title: "Save?",
+					icon: 'question',
+					showCancelButton: true,
+					confirmButtonText: 'Yes'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/MasterPlant/INS',
+							dataType: 'text',
+							data: JSON.stringify({
+								IUType: IU,
+								PlantID: PlantID,
+								PlantName: PlantName,
+								Sloc: Sloc,
+								UserLogin: "@Context.Session.GetString("PIC_ID")"
+							})
+						}).done(function (data, textStatus, jqXHR) {
+							if (data !== 'success') {
+								swal.fire('Error', data, 'error');
+								return;
+							}
+							var modal = document.getElementById("myModal");
+							modal.style.display = "none";
+							swal.fire({ title: 'Success', text: 'Data saved', icon: 'success', timer: 2000, showConfirmButton: false });
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						}).always(function (data_or_jqXHR, textStatus, jqXHR_or_errorThrown) {
+							o.dom.$grid.data('kendoGrid').dataSource.read();
+						});
+					}
+				});
+			});
+		}
+	};
+
+	$(function () {
+		AppD.init();
+	});
+</script>
+
+<script type="text/x-kendo-template" id="template_toolbar">
+	<div class="toolbar">
+	@if (Context.Session.GetString("add_master_plant") == "True")
+	{
+				<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+					<i class="k-icon k-i-plus"></i><span>Add New</span>
+				</button>
+				<div class = "spacew"></div>
+	}
+		<button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+			<i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+		</button>
+	</div>
+</script>

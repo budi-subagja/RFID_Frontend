@@ -147,12 +147,6 @@
 									</div>
 									<div class="flex">
 										<div class="form-group form-material col-md-6">
-											<label class="col-sm-10 control-label">Email</label>
-											<div class="col-sm-10">
-												<input type="email" class="form-control" id="Email" pattern="^[a-zA-Z0-9._+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,9}$" required />
-											</div>
-										</div>
-										<div class="form-group form-material col-md-6">
 											<label class="col-sm-10 control-label">Password</label>
 											<div class="col-sm-10">
 												<input type="password" class="form-control" id="Password" />
@@ -164,12 +158,6 @@
 											<label class="col-sm-10 control-label">User Group</label>
 											<div class="col-sm-10">
 												<input class="form-control" id="UserGroup_Id" required />
-											</div>
-										</div>
-										<div class="form-group form-material col-md-6" id="supp">
-											<label class="col-sm-10 control-label">Supplier</label>
-											<div class="col-sm-10">
-												<input class="form-control" id="Supplier" />
 											</div>
 										</div>
 									</div>
@@ -205,10 +193,8 @@
 			o.dom.inputs = {};
 			o.dom.inputs.$inputUserID = $("#User_Id");
 			o.dom.inputs.$inputName = $("#Name");
-			o.dom.inputs.$inputEmail = $("#Email");
 			o.dom.inputs.$inputPassword = $("#Password");
 			o.dom.inputs.$inputUserGroup = $("#UserGroup_Id");
-			o.dom.inputs.$inputSupplier = $("#Supplier");
 		},
 		data: {},
 		dom: {},
@@ -217,15 +203,12 @@
 				var o = this;
 				o.dom.inputs.$inputUserID.val('');
 				o.dom.inputs.$inputName.val('');
-				o.dom.inputs.$inputEmail.val('');
 				o.dom.inputs.$inputPassword.val('');
 				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value('');
-				o.dom.inputs.$inputSupplier.data("kendoDropDownList").value('');
 
                 document.getElementById("User_Id").disabled = false;
 				$("#Password").attr("placeholder", "");
 				$("#Password").prop("required", true);
-				$("#supp").hide();
 
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
@@ -254,7 +237,7 @@
 						$.ajax({
 							method: 'post',
 							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-							url: 'https://localhost:7072/api/MasterUserGroup/DEL',
+							url: 'https://localhost:7072/api/MasterUser/DEL',
 							dataType: 'text',
 							data: JSON.stringify({
 								PIC_ID: di.PIC_ID,
@@ -284,17 +267,12 @@
 
 				o.dom.inputs.$inputUserID.val(di.PIC_ID);
 				o.dom.inputs.$inputName.val(di.PIC_Name);
-				o.dom.inputs.$inputEmail.val(di.Email);
 				o.dom.inputs.$inputPassword.val('');
 				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value(di.UserGroup_Id);
-				o.dom.inputs.$inputSupplier.data("kendoDropDownList").value((di.Supplier_Code).trim());
 
                 document.getElementById("User_Id").disabled = false;
 				$("#Password").attr("placeholder", "Leave this blank to keep password");
 				$("#Password").prop("required", false);
-
-				if(di.UserGroup_Id == "003") $("#supp").show();
-				else $("#supp").hide();
 
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
@@ -357,13 +335,8 @@
 							fields: {
 								PIC_ID: { type: "string" },
 								PIC_Name: { type: "string" },
-								Dock_Area: { type: "string" },
-								Shop_Code: { type: "string" },
 								UserGroup_Id: { type: "string" },
-								UserGroup: { type: "string" },
-								Supplier_Code: { type: "string" },
-								Supplier_Name: { type: "string" },
-								Email: { type: "string" }
+								UserGroup: { type: "string" }
 							}
 						}
 					},
@@ -391,7 +364,7 @@
 					buttonCount: 5
 				},
 				columns: [
-                @if(Context.Session.GetString("edit_master_user") == "1")
+                @if(Context.Session.GetString("edit_master_user") == "True")
                 {
                     <text>
                     {
@@ -403,7 +376,7 @@
                     },
                     </text>
                 }
-                @if (Context.Session.GetString("del_master_user") == "1")
+				@if (Context.Session.GetString("del_master_user") == "True")
                 {
                     <text>
                     {
@@ -426,16 +399,6 @@
 					width: 200
 				},
 				{
-					field: "Dock_Area",
-					title: "Dock Area",
-					width: 200
-				},
-				{
-					field: "Shop_Code",
-					title: "Shop Code",
-					width: 100
-				},
-				{
 					field: "UserGroup_Id",
 					title: "User Group ID",
 					width: 100,
@@ -445,21 +408,6 @@
 					field: "UserGroup",
 					title: "User Group",
 					width: 100
-				},
-				{
-					field: "Supplier_Code",
-					title: "Supplier Code",
-					width: 150
-				},
-				{
-					field: "Supplier_Name",
-					title: "Supplier Name",
-					width: 250
-				},
-				{
-					field: "Email",
-					title: "Email",
-					width: 200
 				}],
 				toolbar: $("#template_toolbar").html(),
 			});
@@ -470,17 +418,6 @@
 				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
                 optionLabel: "select user group...",
 				dataValueField: "UserGroup_Id",
-				change : function (e) {
-					if(this.value() == "003"){
-						$("#supp").show();
-						$("#Supplier").prop("required", true);
-					} else {
-						$("#supp").hide();
-						$("#Supplier").prop("required", false);
-					}
-
-					$("#Supplier").data("kendoDropDownList").value("");
-				},
 				dataSource: {
 					transport: {
 						read: function (options) {
@@ -508,41 +445,6 @@
 					}
 				}
 			}).data("kendoDropDownList");
-
-			$("#Supplier").kendoDropDownList({
-				template: '<span>#:data.Supplier_Code# - #:data.Supplier_Name#</span>',
-				valueTemplate: '<span>#:data.Supplier_Code# - #:data.Supplier_Name#</span>',
-				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Supplier found',
-				dataValueField: "Supplier_Code",
-                optionLabel: "select supplier...",
-				dataSource: {
-					transport: {
-						read: function (options) {
-							$.ajax({
-								method: 'post',
-								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterSupplier/INQ',
-								dataType: 'text',
-								data: {}
-							}).done(function (data, textStatus, jqXHR) {
-								try {
-									var result = JSON.parse(data);
-								}
-								catch (e) {
-									swal.fire('Error', 'Error loading grid', 'error');
-									options.success({ data: [] });
-									return;
-								}
-								options.success(result);
-							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								options.success({ data: [] });
-							});
-						}
-					}
-				}
-			}).data("kendoDropDownList");
-
 			
 			$("#submitMasterUser").submit(function (e) {
 				e.preventDefault(); // avoid to execute the actual submit of the form.
@@ -550,9 +452,7 @@
 				var UID = document.getElementById("User_Id").value;
 				var Password = document.getElementById("Password").value;
 				var Name = document.getElementById("Name").value;
-				var Email = document.getElementById("Email").value;
 				var UserGroup = document.getElementById("UserGroup_Id").value;
-				var Supplier = document.getElementById("Supplier").value;
 
 				swal.fire({
 					title: "Save?",
@@ -569,10 +469,8 @@
 							data: JSON.stringify({
 								PIC_ID: UID,
 								PIC_Name: Name,
-								Email: Email,
 								password: Password,
 								UserGroup_Id: UserGroup,
-								Supplier_Code: Supplier,
                                 UserLogin: "@Context.Session.GetString("PIC_ID")"
 							})
 						}).done(function (data, textStatus, jqXHR) {
@@ -601,7 +499,7 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
 	<div class="toolbar">
-        @if(Context.Session.GetString("add_master_user") == "1")
+	@if (Context.Session.GetString("add_master_user") == "True")
         {
             <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
                 <i class="k-icon k-i-plus"></i><span>Add New</span>
