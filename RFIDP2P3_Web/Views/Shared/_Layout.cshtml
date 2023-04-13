@@ -49,8 +49,10 @@
 		<div id="content">
 			@RenderBody()
 		</div>
-		<div class="banner"></div>
-		<div id="mySidebar" class="sidebar">
+		<div class="banner"><button id="test" style="background:none;outline:none;border:none;margin-top:30px;margin-left:30px"><i class="material-icons">menu</i></button></div>
+		
+		<div id="mySidebar" class="sidebar" style="width:0px">
+			
 			<button class="collapsible">
 				<i class="material-icons">
 					<img src="~/img/icon.png" width="25px" height="25px" />
@@ -273,7 +275,8 @@
 <script>
 	var openMenuProfile = "no";
 	var openMenu = "no";
-
+	var open = false;
+	/*
 	//sidebar
 	document.getElementById("mySidebar").addEventListener("mouseover", function () {
 		document.getElementById("mySidebar").style.width = "270px";
@@ -321,7 +324,7 @@
 			} 	
 		}
 	});
-
+	
 	document.getElementById("mySidebar").addEventListener("mouseout", function () {
 		document.getElementById("mySidebar").style.width = "90px";
 		document.getElementById("content").style.marginLeft = "90px";
@@ -335,8 +338,9 @@
 		var active;
 		
 		if(window.location.pathname.toString().includes("Master")){
-			active = document.getElementsByClassName("active")[1];
+			//active = document.getElementsByClassName("active")[1];
 			var contentz = document.getElementsByClassName("contentz");
+			
 			for (var i=0;i<contentz.length;i+=1){
 				contentz[i].style.display = 'none';
 			}
@@ -346,10 +350,93 @@
 			 contentzUser[0].style.display = 'none';
 		}
 
-		active.style.paddingRight = "0px";
-		active.style.transform = "translateX(-10px)";
-		active.style.paddingLeft= "0px";
-	});
+		//active.style.paddingRight = "0px";
+		//active.style.transform = "translateX(80px)";
+		//active.style.paddingLeft= "0px";
+	});*/
+	document.getElementById("test").addEventListener("click", myFunction);
+
+	function myFunction() {
+
+		if(open == false){
+			open = true;
+			document.getElementById("mySidebar").style.width = "270px";
+			document.getElementById("content").style.marginLeft = "270px";
+
+			var iconText = document.getElementsByClassName("icon-text");
+
+			for (var i = 0; i < iconText.length; i += 1) {
+				iconText[i].style.display = 'inline';
+			}
+
+			var active;
+
+			if (window.location.pathname.toString().includes("Master")) {
+				active = document.getElementsByClassName("active")[1];
+				active.style.transform = "translateX(-20px)";
+				active.style.paddingLeft = "20px";
+			} else if (window.location.pathname.toString().includes("Security")) {
+				active = document.getElementsByClassName("active")[0];
+				active.style.transform = "translateX(-20px)";
+				active.style.paddingLeft = "20px";
+			} else if (window.location.pathname.toString().includes("Report")) {
+				active = document.getElementsByClassName("active")[2];
+				active.style.transform = "translateX(-20px)";
+				active.style.paddingLeft = "20px";
+			} else {
+				active = document.getElementsByClassName("active")[0];
+				active.style.transform = "translateX(-50px)";
+				active.style.paddingLeft = "42px";
+			}
+
+			active.style.paddingRight = "230px";
+
+			var contentz = document.getElementsByClassName("contentz");
+			for (var i = 0; i < contentz.length; i += 1) {
+				if (openMenu == "yes") {
+					contentz[i].style.display = 'block';
+				}
+			}
+
+			var contentzUser = document.getElementsByClassName("contentz-user");
+			for (var i = 0; i < contentzUser.length; i += 1) {
+				if (openMenuProfile == "yes") {
+					contentzUser[i].style.display = 'block';
+				}
+			}
+		} else if(open == true){
+			open = false;
+
+			document.getElementById("mySidebar").style.width = "0px";
+			document.getElementById("content").style.marginLeft = "90px";
+
+			var iconText = document.getElementsByClassName("icon-text");
+
+			for (var i = 0; i < iconText.length; i += 1) {
+				iconText[i].style.display = 'none';
+			}
+
+			var active;
+
+			if (window.location.pathname.toString().includes("Master")) {
+				//active = document.getElementsByClassName("active")[1];
+				var contentz = document.getElementsByClassName("contentz");
+
+				for (var i = 0; i < contentz.length; i += 1) {
+					contentz[i].style.display = 'none';
+				}
+			} else if (window.location.pathname.toString().includes("Security")) {
+				active = document.getElementsByClassName("active")[0];
+				var contentzUser = document.getElementsByClassName("contentz-user");
+				contentzUser[0].style.display = 'none';
+			}
+
+			//active.style.paddingRight = "0px";
+			//active.style.transform = "translateX(80px)";
+			//active.style.paddingLeft= "0px";
+		}
+		
+	}
 
 	//colapse
 	var coll = document.getElementsByClassName("collapsible");
