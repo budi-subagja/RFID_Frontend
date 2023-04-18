@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Master GI P3";
+	ViewData["Title"] = "master GI P3";
 }
 
 <style>
@@ -25,9 +25,6 @@
 		background-color: white;
 	}
 
-	.k-grid-header th.k-header{
-		height:12px;
-	}
 	.k-grid-content {
 		height: 55vh;
 	}
@@ -117,9 +114,10 @@
 	}
 </style>
 
+
 <div class="page-main">
 	<div class="page-content">
-		<h3>Master GI P3</h3>
+		<h3>master GI P2</h3>
 		<hr>
 		<div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
 		<!-- The Modal -->
@@ -128,33 +126,42 @@
 			<div class="modal-content">
 				<div class="" role="document">
 					<div class="modal-header">
-						<h4 class="modal-title" id="myModalLabel">Add GI P3</h4>
+						<h4 class="modal-title" id="myModalLabel">Add New</h4>
 					</div>
 					<div class="modal-body">
 						<div class="panel">
 							<div class="panel-body">
-								<form class="form-horizontal" id="submitMasterUser">
+								<form class="form-horizontal" id="submitForm">
 									<div class="flex">
-										<div class="form-group form-material col-md-3">
+										<div class="form-group form-material col-md-4">
 											<label class="col-sm-10 control-label">Plant</label>
 											<div class="col-sm-10">
-												<input class="form-control" id="UserGroup_Id" required />
+												<input class="form-control" id="PlantID" required />
 											</div>
 										</div>
 									</div>
 									<div class="flex">
-										<div class="form-group form-material col-md-3">
-											<label class="col-sm-10 control-label">Shop</label>
+										<div class="form-group form-material col-md-4">
+											<label class="col-sm-10 control-label">Gedung</label>
 											<div class="col-sm-10">
-												<input class="form-control" id="UserGroup_Id1" required />
+												<input class="form-control" id="BuildingId" required />
 											</div>
 										</div>
 									</div>
 									<div class="flex">
-										<div class="form-group form-material col-md-3">
-											<label class="col-sm-10 control-label">Department</label>
+										<div class="form-group form-material col-md-4">
+											<label class="col-sm-10 control-label">Part Number</label>
 											<div class="col-sm-10">
-												<input class="form-control" id="UserGroup_Id2" required />
+												<input class="form-control" id="PartNo" required />
+											</div>
+										</div>
+									</div>
+
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">GL Account</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="GLAccount" required />
 											</div>
 										</div>
 									</div>
@@ -162,7 +169,23 @@
 										<div class="form-group form-material col-md-6">
 											<label class="col-sm-10 control-label">Cost Center</label>
 											<div class="col-sm-10">
-												<input type="text" class="form-control" id="Name" />
+												<input type="text" class="form-control" id="CostCenter" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">Movement Type</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="MovementType" required />
+											</div>
+										</div>
+									</div>
+									<div class="flex">
+										<div class="form-group form-material col-md-6">
+											<label class="col-sm-10 control-label">Plant From</label>
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="PlantFrom" required />
 											</div>
 										</div>
 									</div>
@@ -182,6 +205,128 @@
 </div>
 
 <script>
+	var DeptId = '0'; var IUType = 'I';
+
+
+	$("#PlantID").kendoDropDownList({
+		template: '<span>#:data.PlantID# - #:data.PlantName#</span>',
+		valueTemplate: '<span>#:data.PlantID# - #:data.PlantName#</span>',
+		footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Plant found',
+		optionLabel: "select user group...",
+		dataValueField: "PlantID",
+		dataSource: {
+			transport: {
+				read: function (options) {
+					$.ajax({
+						method: 'post',
+						headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+						url: 'https://localhost:7072/api/DropDown/INQ',
+						dataType: 'text',
+						data: JSON.stringify({ Ftype: "Plant", Plant: "" })
+					}).done(function (data, textStatus, jqXHR) {
+						try {
+							var result = JSON.parse(data);
+						}
+						catch (e) {
+							swal.fire('Error', 'Error loading grid', 'error');
+							options.success({ data: [] });
+							return;
+						}
+						options.success(result);
+					}).fail(function (jqXHR, textStatus, errorThrown) {
+						swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+						options.success({ data: [] });
+					});
+				}
+			}
+		},
+		change: function (e) {
+			var value = this.value();
+			getShop(value);
+			// Use the value of the widget
+		}
+	}).data("kendoDropDownList");
+
+	function getShop(plant) {
+
+		$("#BuildingId").kendoDropDownList({
+			template: '<span>#:data.ShopId# - #:data.ShopName#</span>',
+			valueTemplate: '<span>#:data.ShopId# - #:data.ShopName#</span>',
+			footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Shop found',
+			optionLabel: "select Building...",
+			dataValueField: "ShopId",
+			dataSource: {
+				transport: {
+					read: function (options) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/DropDown/INQ',
+							dataType: 'text',
+							data: JSON.stringify({ Ftype: "Shop", Plant: plant })
+						}).done(function (data, textStatus, jqXHR) {
+							try {
+								var result = JSON.parse(data);
+							}
+							catch (e) {
+								swal.fire('Error', 'Error loading grid', 'error');
+								options.success({ data: [] });
+								return;
+							}
+							options.success(result);
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+							options.success({ data: [] });
+						});
+					}
+				}
+			},
+			change: function (e) {
+				var value = this.value();
+				getDept(plant, value);
+				// Use the value of the widget
+			}
+		}).data("kendoDropDownList");
+	}
+
+	function getDept(plant, shop) {
+
+		$("#PartNo").kendoDropDownList({
+			template: '<span>#:data.DeptID# - #:data.DeptName#</span>',
+			valueTemplate: '<span>#:data.DeptID# - #:data.DeptName#</span>',
+			footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Shop found',
+			optionLabel: "select Part No...",
+			dataValueField: "DeptID",
+			dataSource: {
+				transport: {
+					read: function (options) {
+						$.ajax({
+							method: 'post',
+							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+							url: 'https://localhost:7072/api/DropDown/INQ',
+							dataType: 'text',
+							data: JSON.stringify({ Ftype: "Dept", Plant: plant })
+						}).done(function (data, textStatus, jqXHR) {
+							try {
+								var result = JSON.parse(data);
+							}
+							catch (e) {
+								swal.fire('Error', 'Error loading grid', 'error');
+								options.success({ data: [] });
+								return;
+							}
+							options.success(result);
+						}).fail(function (jqXHR, textStatus, errorThrown) {
+							swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+							options.success({ data: [] });
+						});
+					}
+				}
+			}
+		}).data("kendoDropDownList");
+	}
+
+
 	var AppD = {
 		attachEvents: function () {
 			var o = this;
@@ -196,22 +341,21 @@
 			var o = this;
 			o.dom.$grid = $("#grid");
 			o.dom.inputs = {};
-			o.dom.inputs.$inputUserID = $("#User_Id");
-			o.dom.inputs.$inputName = $("#Name");
-			o.dom.inputs.$inputPassword = $("#Password");
-			o.dom.inputs.$inputUserGroup = $("#UserGroup_Id");
-			o.dom.inputs.$inputUserGroup1 = $("#UserGroup_Id1");
-			o.dom.inputs.$inputUserGroup2 = $("#UserGroup_Id2");
+			o.dom.inputs.$inputPlantID = $("#PlantID");
+			o.dom.inputs.$inputDeptName = $("#DeptName");
 		},
 		data: {},
 		dom: {},
 		eventHandlers: {
 			onClickBtnCreate: function () {
 				var o = this;
-				$('#myModalLabel').html('Add GI P3');
-				o.dom.inputs.$inputName.val('');
-				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value('');
-
+				$('#myModalLabel').html('Add New');
+				DeptId = '0';
+				IUType = 'I';
+				o.dom.inputs.$inputDeptName.val('');
+				o.dom.inputs.$inputPlantID.data("kendoDropDownList").value('');
+				getShop('X');
+				getDept('X');
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
 				window.onclick = function (event) {
@@ -239,11 +383,10 @@
 						$.ajax({
 							method: 'post',
 							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-							url: 'https://localhost:7072/api/MasterUser/DEL',
+							url: 'https://localhost:7072/api/masterGIP3/DEL',
 							dataType: 'text',
 							data: JSON.stringify({
-								PIC_ID: di.PIC_ID,
-								UserLogin: "@Context.Session.GetString("PIC_ID")"
+								DeptId: di.DeptId
 							})
 						}).done(function (data, textStatus, jqXHR) {
 							if (data !== 'success') {
@@ -265,11 +408,16 @@
 			},
 			onClickBtnUpdate: function (e) {
 				var o = this;
-				$('#myModalLabel').html('Edit GI P3');
+				$('#myModalLabel').html('Edit GIP3');
 				var di = o.dom.$grid.data('kendoGrid').dataItem($(e.target).closest('tr'));
 
-				o.dom.inputs.$inputName.val(di.PIC_Name);
-				o.dom.inputs.$inputUserGroup.data("kendoDropDownList").value(di.UserGroup_Id);
+				o.dom.inputs.$inputDeptName.val(di.DeptName);
+				o.dom.inputs.$inputPlantID.data("kendoDropDownList").value(di.PlantID);
+				getShop(di.PlantID);
+				getDept(di.PlantID);
+				$("#ShopId").data("kendoDropDownList").value(di.ShopId);
+				DeptId = di.DeptId;
+				IUType = 'U';
 
 				var modal = document.getElementById("myModal");
 				modal.style.display = "block";
@@ -295,7 +443,7 @@
 
 			o.dom.$grid.kendoGrid({
 				excel: {
-					fileName: "Master GI P3.xlsx",
+					fileName: "master GI P3.xlsx",
 					allPages: true,
 					filterable: true
 				},
@@ -305,7 +453,7 @@
 							$.ajax({
 								method: 'post',
 								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterUser/INQ',
+								url: 'https://localhost:7072/api/MasterGIP2/INQ',
 								dataType: 'text',
 								data: JSON.stringify({
 									UserLogin: "@Context.Session.GetString("PIC_ID")"
@@ -330,10 +478,22 @@
 						model: {
 							id: "PIC_ID",
 							fields: {
-								PIC_ID: { type: "string" },
-								PIC_Name: { type: "string" },
-								UserGroup_Id: { type: "string" },
-								UserGroup: { type: "string" }
+
+								GIP3Id: { type: "string" },
+								PlantId: { type: "string" },
+								PlantName: { type: "string" },
+								BuildingId: { type: "string" },
+								BuildingName: { type: "string" },
+								PartNumber: { type: "string" },
+								PartDescription: { type: "string" },
+								PartName: { type: "string" },
+								GLAccount: { type: "string" },
+								CostCenter: { type: "string" },
+								MovementType: { type: "string" },
+								PlantFrom: { type: "string" },
+								UserUpdate: { type: "string" },
+								DateUpdate: { type: "string" },
+								Remarks: { type: "string" }
 							}
 						}
 					},
@@ -361,221 +521,74 @@
 					buttonCount: 5
 				},
 				columns: [
-					@if (Context.Session.GetString("edit_master_gi_p3") == "True")
+	@if (Context.Session.GetString("edit_master_gi_p3") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Update",
+								text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
+	@if (Context.Session.GetString("del_master_gi_p3") == "True")
+	{
+		<text>
+						{
+							width: 25,
+							command: [{
+								name: "Delete",
+								text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
+							}]
+						},
+		</text>
+	}
 					{
-						<text>
-										{
-											width: 40,
-											command: [{
-												name: "Update",
-												text: "<i class='fas fa-edit btnUpdate' title='Update' style='font-size:18px;'></i>"
-											}]
-										},
-						</text>
-					}
-					@if (Context.Session.GetString("del_master_gi_p3") == "True")
-					{
-						<text>
-										{
-											width: 40,
-											command: [{
-												name: "Delete",
-												text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
-											}]
-										},
-						</text>
-					}
-					{
-						field: "PIC_ID",
+						field: "PlantId",
 						title: "Plant",
 						width: 50
 					},
 					{
-						field: "PIC_Name",
-						title: "Gedung",
-						width: 200
+						field: "ShopName",
+						title: "Shop",
+						width: 150
 					},
 					{
-						field: "PIC_Name",
-						title: "Part Number",
-						width: 200
+						field: "DeptId",
+						title: "Department",
+						width: 100,
+						hidden: true
 					},
 					{
-						field: "PIC_Name",
-						title: "Part Desc",
-						width: 100
+						field: "DeptName",
+						title: "Department Name",
+						width: 100,
 					},
 					{
-						field: "UserGroup_Id",
-						title: "Part Name",
-						width: 100
-					},
-
-					{
-						title: "KONVERSI INTERNAL SCRAP",
+						title: "Last Update",
 						columns: [
-						{
-							field: "",
-							title: "GL Account",
-							width: 100
-						},
-						{
-							field: "",
-							title: "Cost Center",
-							width: 100
-						},
-						{
-							field: "",
-							title: "Movement",
-							width: 100
-						},
-						{
-							field: "",
-							title: "From",
-							width: 100
-						},
-						{
-							field: "",
-							title: "MAterial Konversi",
-							width: 100
-						},
-						{
-							field: "",
-							title: "Material KG",
-							width: 100
-						},
-						{
-							field: "",
-							title: "GL Account",
-							width: 100
-						},
-						{
-							field: "",
-							title: "Cost Center",
-							width: 100
-						},
-						{
-							field: "",
-							title: "Movement",
-							width: 100
-						},
-						{
-							field: "",
-							title: "To",
-							width: 100
-					}]
+							{
+								field: "UserUpdate",
+								title: "User",
+								width: 100
+							},
+							{
+								field: "DateUpdate",
+								title: "Date",
+								width: 100
+							}]
 					}],
 				toolbar: $("#template_toolbar").html(),
 			});
 
-			$("#UserGroup_Id1").kendoDropDownList({
-				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
-				optionLabel: "select user group...",
-				dataValueField: "UserGroup_Id",
-				dataSource: {
-					transport: {
-						read: function (options) {
-							$.ajax({
-								method: 'post',
-								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
-								dataType: 'text',
-								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
-							}).done(function (data, textStatus, jqXHR) {
-								try {
-									var result = JSON.parse(data);
-								}
-								catch (e) {
-									swal.fire('Error', 'Error loading grid', 'error');
-									options.success({ data: [] });
-									return;
-								}
-								options.success(result);
-							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								options.success({ data: [] });
-							});
-						}
-					}
-				}
-			}).data("kendoDropDownList");
-			$("#UserGroup_Id2").kendoDropDownList({
-				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
-				optionLabel: "select user group...",
-				dataValueField: "UserGroup_Id",
-				dataSource: {
-					transport: {
-						read: function (options) {
-							$.ajax({
-								method: 'post',
-								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
-								dataType: 'text',
-								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
-							}).done(function (data, textStatus, jqXHR) {
-								try {
-									var result = JSON.parse(data);
-								}
-								catch (e) {
-									swal.fire('Error', 'Error loading grid', 'error');
-									options.success({ data: [] });
-									return;
-								}
-								options.success(result);
-							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								options.success({ data: [] });
-							});
-						}
-					}
-				}
-			}).data("kendoDropDownList");
-			$("#UserGroup_Id").kendoDropDownList({
-				template: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				valueTemplate: '<span>#:data.UserGroup_Id# - #:data.UserGroup#</span>',
-				footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> User Group found',
-				optionLabel: "select user group...",
-				dataValueField: "UserGroup_Id",
-				dataSource: {
-					transport: {
-						read: function (options) {
-							$.ajax({
-								method: 'post',
-								headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-								url: 'https://localhost:7072/api/MasterUserGroup/INQ',
-								dataType: 'text',
-								data: JSON.stringify({ UserGroup_Id: "@Context.Session.GetString("UserGroup_Id")" })
-							}).done(function (data, textStatus, jqXHR) {
-								try {
-									var result = JSON.parse(data);
-								}
-								catch (e) {
-									swal.fire('Error', 'Error loading grid', 'error');
-									options.success({ data: [] });
-									return;
-								}
-								options.success(result);
-							}).fail(function (jqXHR, textStatus, errorThrown) {
-								swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
-								options.success({ data: [] });
-							});
-						}
-					}
-				}
-			}).data("kendoDropDownList");
-
-			$("#submitMasterUser").submit(function (e) {
+			$("#submitForm").submit(function (e) {
 				e.preventDefault(); // avoid to execute the actual submit of the form.
 
-				var UID = document.getElementById("User_Id").value;
-				var Password = document.getElementById("Password").value;
-				var Name = document.getElementById("Name").value;
-				var UserGroup = document.getElementById("UserGroup_Id").value;
-
+				var PlantID = $("#PlantID").val();
+				var ShopId = $("#ShopId").val();
+				var DeptName = $("#DeptName").val();
 				swal.fire({
 					title: "Save?",
 					icon: 'question',
@@ -586,13 +599,14 @@
 						$.ajax({
 							method: 'post',
 							headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-							url: 'https://localhost:7072/api/MasterUser/INS',
+							url: 'https://localhost:7072/api/masterGIP3/INS',
 							dataType: 'text',
 							data: JSON.stringify({
-								PIC_ID: UID,
-								PIC_Name: Name,
-								password: Password,
-								UserGroup_Id: UserGroup,
+								ShopId: ShopId,
+								DeptId: DeptId,
+								DeptName: DeptName,
+								PlantID: PlantID,
+								IUType: IUType,
 								UserLogin: "@Context.Session.GetString("PIC_ID")"
 							})
 						}).done(function (data, textStatus, jqXHR) {
@@ -625,6 +639,14 @@
 	{
 							<button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
 								<i class="k-icon k-i-plus"></i><span>Add New</span>
+							</button>
+								<div class = "spacew"></div>
+							<button data-toggle="tooltip" title="Upload" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnUpload">
+								<i class="k-icon k-i-upload"></i><span>Upload</span>
+							</button>
+							<div class = "spacew"></div>
+							<button data-toggle="tooltip" title="Download" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnDownload">
+								<i class="k-icon k-i-download"></i><span>Download</span>
 							</button>
 							<div class = "spacew"></div>
 	}

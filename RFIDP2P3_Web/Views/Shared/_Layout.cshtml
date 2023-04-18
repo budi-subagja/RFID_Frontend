@@ -99,6 +99,9 @@
 					Context.Session.GetString("read_master_gi_p3") == "True"||
 					Context.Session.GetString("read_master_department") == "True"||
 					Context.Session.GetString("read_master_section") == "True"||
+					Context.Session.GetString("read_GRPro") == "True"||
+					Context.Session.GetString("read_MonitorPallet") == "True"||
+					Context.Session.GetString("read_AndonBuffer") == "True" ||
 					Context.Session.GetString("read_master_shop") == "True")
 			{
 				<button class="collapsible">
@@ -200,7 +203,7 @@
 				{
 					<div class="rounded">
 						<a asp-controller="Master" asp-action="MasterPart" class="@getClass("Master", "MasterPart")">
-							<span class="icon-text">&nbsp;Master Material</span>
+							<span class="icon-text">&nbsp;Master Part</span>
 						</a>
 					</div>
 				}
@@ -222,19 +225,50 @@
 					}				 
 				</div>
 			}
-			@if (Context.Session.GetString("read_report") == "True"){
+			@if (Context.Session.GetString("read_report") == "True" ||
+					Context.Session.GetString("read_GRPro") == "True"||
+					Context.Session.GetString("read_MonitorPallet") == "True"||
+					Context.Session.GetString("read_AndonBuffer") == "True")
+			{
 				<button class="collapsible">
 					<a id="report">
 						<i class="material-icons">report</i>
 						<span class="icon-text"><b>Report</b></span>
 					</a>
 				</button>
-				<div class="contenreport" style="margin-left:90px">
+				<div class="contenreport" style="margin-left:90px;display:none;">
 					@if (Context.Session.GetString("read_report") == "True")
 					{
 						<div class="rounded">
 							<a asp-controller="Report" asp-action="Report" class="@getClass("Report", "Report")">
 								<span class="icon-text">&nbsp;Report</span>
+							</a>
+						</div>
+
+					}
+					@if (Context.Session.GetString("read_GRPro") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Report" asp-action="GRPro" class="@getClass("Report", "GRPro")">
+								<span class="icon-text">&nbsp;GRPro</span>
+							</a>
+						</div>
+
+					}
+					@if (Context.Session.GetString("read_MonitorPallet") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Report" asp-action="MonitorPallet" class="@getClass("Report", "MonitorPallet")">
+								<span class="icon-text">&nbsp;Monitor Pallet</span>
+							</a>
+						</div>
+
+					}
+					@if (Context.Session.GetString("read_AndonBuffer") == "True")
+					{
+						<div class="rounded">
+							<a asp-controller="Report" asp-action="AndonBuffer" class="@getClass("Report", "AndonBuffer")">
+								<span class="icon-text">&nbsp;Andon Buffer</span>
 							</a>
 						</div>
 
@@ -447,6 +481,16 @@
 		masterButton.classList.add("active");
 
 		var master = document.getElementsByClassName("contentz");
+		for (var i = 0; i < master.length; i += 1) {
+			master[i].style.display = 'none';
+			openMenu = "no";
+		}
+	}
+	if (window.location.pathname.toString().includes("report")) {
+		var masterButton = document.getElementById("report");
+		masterButton.classList.add("active");
+
+		var master = document.getElementsByClassName("contenreport");
 		for (var i = 0; i < master.length; i += 1) {
 			master[i].style.display = 'none';
 			openMenu = "no";

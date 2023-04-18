@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Master Part";
+    ViewData["Title"] = "GR Pro.";
 }
 
 <style>
@@ -120,7 +120,7 @@
 <div id="qr_code"></div>
 <div class="page-main">
     <div class="page-content">
-        <h3>Master Part</h3>
+        <h3>GR Pro.</h3>
         <hr>
         <div id="grid" style="margin-top:5px; margin-bottom:5px;"></div>
         <!-- The Modal -->
@@ -129,52 +129,45 @@
             <div class="modal-content">
                 <div class="" role="document">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="myModalLabel">Add New Part</h4>
+                        <h4 class="modal-title" id="myModalLabel">Search Filter</h4>
                     </div>
                     <div class="modal-body">
                         <div class="panel">
                             <div class="panel-body">
-                                <form class="form-horizontal" id="submitMasterPart">
+                                <form class="form-horizontal" id="submitGRPro">
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-10 control-label">Material No.</label>
+                                            <label class="col-sm-10 control-label">Shift</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="MaterialNo" required />
+                                                <input type="text" class="form-control" id="ShiftID" required />
                                             </div>
                                         </div>
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-10 control-label">Job No.</label>
+                                            <label class="col-sm-10 control-label">Dummy/Vacum</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="JobNo" required />
+                                                <input type="text" class="form-control" id="GRProType" required />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex">
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-10 control-label">Material Name</label>
+                                            <label class="col-sm-10 control-label">Period From</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="MaterialName" required />
+                                                <input type="text" class="form-control" id="Period_From" required />
                                             </div>
                                         </div>
+
                                         <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-10 control-label">Material Desc.</label>
+                                            <label class="col-sm-10 control-label">Period To</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="MaterialDescription" required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex">
-                                        <div class="form-group form-material col-md-6">
-                                            <label class="col-sm-10 control-label">Qty per Box</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="QtyPerBox" required />
+                                                <input type="text" class="form-control" id="Period_To" required />
                                             </div>
                                         </div>
                                     </div>
                                     <br />
                                     <div>
                                         <button type="button" class="btn btn-red" id="btnCancel">Cancel</button>
-                                        <input class="btn btn-primary" id="btnSave" value="Save" type="submit" />
+                                        <input class="btn btn-primary" id="btnSave" value="Search" type="submit" />
                                     </div>
                                 </form>
                             </div>
@@ -187,6 +180,100 @@
 </div>
 
 <script>
+
+    var dateDefault = new Date();
+    $("#Period_From").kendoDatePicker({
+        format: 'dd/MM/yyyy',
+        value: dateDefault,
+        //change: o.eventHandlers.onChangeDate.bind(o)
+    });
+    $("#Period_To").kendoDatePicker({
+        format: 'dd/MM/yyyy',
+        value: dateDefault,
+        //change: o.eventHandlers.onChangeDate.bind(o)
+    });
+
+    $("#ShiftID").kendoDropDownList({
+        template: '<span>#:data.PlantID# - #:data.PlantName#</span>',
+        valueTemplate: '<span>#:data.PlantID# - #:data.PlantName#</span>',
+        footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Plant found',
+        optionLabel: "select user group...",
+        dataValueField: "PlantID",
+        dataSource: {
+            transport: {
+                read: function (options) {
+                    $.ajax({
+                        method: 'post',
+                        headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                        url: 'https://localhost:7072/api/DropDown/INQ',
+                        dataType: 'text',
+                        data: JSON.stringify({ Ftype: "Plant", Plant: "" })
+                    }).done(function (data, textStatus, jqXHR) {
+                        try {
+                            var result = JSON.parse(data);
+                        }
+                        catch (e) {
+                            swal.fire('Error', 'Error loading grid', 'error');
+                            options.success({ data: [] });
+                            return;
+                        }
+                        options.success(result);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                        options.success({ data: [] });
+                    });
+                }
+            }
+        },
+        change: function (e) {
+            var value = this.value();
+            getShop(value);
+            // Use the value of the widget
+        }
+    }).data("kendoDropDownList");
+
+    function getShop(plant) {
+
+        $("#GRProType").kendoDropDownList({
+            template: '<span>#:data.ShopId# - #:data.ShopName#</span>',
+            valueTemplate: '<span>#:data.ShopId# - #:data.ShopName#</span>',
+            footerTemplate: 'Total number of <strong>#: instance.dataSource.total() #</strong> Shop found',
+            optionLabel: "select Building...",
+            dataValueField: "ShopId",
+            dataSource: {
+                transport: {
+                    read: function (options) {
+                        $.ajax({
+                            method: 'post',
+                            headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
+                            url: 'https://localhost:7072/api/DropDown/INQ',
+                            dataType: 'text',
+                            data: JSON.stringify({ Ftype: "Shop", Plant: plant })
+                        }).done(function (data, textStatus, jqXHR) {
+                            try {
+                                var result = JSON.parse(data);
+                            }
+                            catch (e) {
+                                swal.fire('Error', 'Error loading grid', 'error');
+                                options.success({ data: [] });
+                                return;
+                            }
+                            options.success(result);
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            swal.fire('Error', (jqXHR.responseText !== '' ? ': ' + jqXHR.responseText : ''), 'error');
+                            options.success({ data: [] });
+                        });
+                    }
+                }
+            },
+            change: function (e) {
+                var value = this.value();
+                getDept(plant, value);
+                // Use the value of the widget
+            }
+        }).data("kendoDropDownList");
+    }
+
     var AppD = {
         attachEvents: function () {
             var o = this;
@@ -214,6 +301,7 @@
 
             onClickBtnCreate: function () {
                 var o = this;
+                getShop('X');
                 $("#myModalLabel").html("Add New Part");
                 o.dom.inputs.$inputMaterialNo.val('');
                 o.dom.inputs.$inputJobNo.val('');
@@ -318,7 +406,7 @@
                         $.ajax({
                             method: 'post',
                             headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                            url: 'https://localhost:7072/api/MasterPart/DEL',
+                            url: 'https://localhost:7072/api/GRPro/DEL',
                             dataType: 'text',
                             data: JSON.stringify({
                                 MaterialNo: di.MaterialNo
@@ -353,7 +441,7 @@
 
             o.dom.$grid.kendoGrid({
                 excel: {
-                    fileName: "Master Part.xlsx",
+                    fileName: "GR Pro.xlsx",
                     allPages: true,
                     filterable: true
                 },
@@ -363,13 +451,19 @@
                             $.ajax({
                                 method: 'post',
                                 headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                                url: 'https://localhost:7072/api/MasterPart/INQ',
+                                url: 'https://localhost:7072/api/GRPro/INQ',
                                 dataType: 'text',
-                                data: {}
+                                data: JSON.stringify({
+                                    GRProType: 'Dummy',
+                                    Shift : '001',
+                                    PeriodFrom : '20230101',
+                                    PeriodTo : '20230201'
+
+                                })
                             }).done(function (data, textStatus, jqXHR) {
                                 try {
                                     var result = JSON.parse(data);
-                                    //console.log(data);
+                                    console.log(data);
                                 }
                                 catch (e) {
                                     swal.fire('Error', 'Error loading grid', 'error');
@@ -385,30 +479,20 @@
                     },
                     schema: {
                         model: {
-                            id: "PartNumber",
+                            id: "MaterialNo",
                             fields: {
-
-                                PlantID: { type: "string" },
-                                PlantName: { type: "string" },
-                                BuildingID: { type: "string" },
-                                BuildingName: { type: "string" },
+                                GRProId: { type: "string" },
+                                ProdDate: { type: "string" },
+                                ProdShift: { type: "string" },
+                                GRProType: { type: "string" },
+                                SAPStatus: { type: "string" },
                                 PartNumber: { type: "string" },
-                                PartName: { type: "string" },
-                                PartDescription: { type: "string" },
-                                CycleTimeMin: { type: "string" },
-                                CycleTimeSec: { type: "string" },
-                                Efficiency: { type: "string" },
-                                LineID: { type: "string" },
-                                LineName: { type: "string" },
-                                QtyperPallet: { type: "string" },
-                                QtyProdPerDay: { type: "string" },
-                                PartStockMin: { type: "string" },
-                                PartStockMax: { type: "string" },
-                                PartStockDay: { type: "string" },
-                                CycleMax: { type: "string" },
+                                PartDesc: { type: "string" },
+                                Qty: { type: "string" },
+                                GRPro: { type: "string" },
+                                SAPPostingDate: { type: "string" },
                                 UserUpdate: { type: "string" },
                                 DateUpdate: { type: "string" },
-                                Remarks: { type: "string" }
                             }
                         }
                     },
@@ -436,8 +520,12 @@
                     buttonCount: 5
                 },
                 columns: [
-                    
-                    @if(Context.Session.GetString("del_master_part") == "True")
+                    {
+                        field: "",
+                        title: "Flag",
+                        width: 50
+                    },
+                    @if(Context.Session.GetString("edit_master_part") == "True")
                     {
                         <text>
                         {
@@ -449,111 +537,30 @@
                         },
                         </text>
                     }
-                    @if (Context.Session.GetString("del_master_part") == "True")
                     {
-                        <text>
-                        {
-                            width: 70,
-                            command: [{
-                                name: "Delete",
-                                text: "<i class='fas fa-trash btnDelete red' title='Delete' style='font-size:18px;'></i>"
-                            }]
-                        },
-                        </text>
-                    }
-                    {
-							width: 70,
-							command: [{
-								name: "QR",
-								text: "<i class='fas fa-qrcode btnQR' title='QR Code' style='font-size:18px;'></i>"
-							}]
-					},
-                    {
-                        field: "PlantID",
-                        title: "Plant",
+                        field: "",
+                        title: "Status SAP",
                         width: 80
                     },
                     {
-                        field: "BuildingName",
-                        title: "Building",
+                        field: "",
+                        title: "Part No",
                         width: 120
                     },
                     {
-                        field: "PartNumber",
-                        title: "Part No.",
+                        field: "",
+                        title: "Part Desc",
                         width: 120
                     },
                     {
-                        field: "PartName",
-                        title: "Part Name",
+                        field: "",
+                        title: "Qty Prod",
                         width: 200
                     },
                     {
-                        field: "PartDescription",
-                        title: "Part Desc.",
+                        field: "",
+                        title: "GR Pro",
                         width: 200
-                    },
-                    {
-                        title: "Cycle Time",
-                        columns: [
-                        {
-                            field: "CycleTimeMin",
-                            title: "Min.",
-                            width: 80
-                        },
-                        {
-                            field: "CycleTimeSec",
-                            title: "Sec.",
-                            width: 80
-                        }]
-                    },
-                    {
-                        field: "Efficiency",
-                        title: "Eff",
-                        width: 50
-                    },
-                    {
-                        field: "LineName",
-                        title: "Line",
-                        width: 80
-                    },
-                    {
-                        title: "Qty",
-                        columns: [
-                        {
-                            field: "QtyperPallet",
-                            title: "Per Palet",
-                            width: 120
-                        },
-                        {
-                            field: "QtyProdPerDay",
-                            title: "Prod Per Day",
-                            width: 120
-                        }]
-                    },
-                    {
-                        title: "Part Stock",
-                        columns: [
-                        {
-                            field: "PartStockMin",
-                            title: "MIN",
-                            width: 80
-                        },
-                        {
-                            field: "PartStockMax",
-                            title: "MAX",
-                            width: 80
-                        },
-                        {
-                            field: "PartStockDay",
-                            title: "Day",
-                            width: 80
-                        }]
-                    },
-                    {
-                        field: "CycleMax",
-                        title: "CycleMax",
-                        width: 80
                     },
                     {
                     title: "Last Update",
@@ -568,11 +575,28 @@
                             title: "Date",
                             width: 150
                         }]
-                    }],
+                    },
+                    {
+                        field: "",
+                        title: "Shift",
+                        width: 200
+                    },
+                    {
+                        field: "",
+                        title: "GR Pro Posting Date",
+                        width: 200
+                    },
+                    {
+                        field: "",
+                        title: "SAP Posting GR date",
+                        width: 200
+                    },
+                    
+                ],
                 toolbar: $("#template_toolbar").html(),
             });
 
-            $("#submitMasterPart").submit(function (e) {
+            $("#submitGRPro").submit(function (e) {
                 e.preventDefault(); // avoid to execute the actual submit of the form.
 
                 var MaterialNo = $("#MaterialNo").val();
@@ -591,7 +615,7 @@
                         $.ajax({
                             method: 'post',
                             headers: { 'Content-Type': 'application/json', 'XApiKey': 'pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp' },
-                            url: 'https://localhost:7072/api/MasterPart/INS',
+                            url: 'https://localhost:7072/api/GRPro/INS',
                             dataType: 'text',
                             data: JSON.stringify({
                                 MaterialNo      : MaterialNo,
@@ -627,15 +651,25 @@
 
 <script type="text/x-kendo-template" id="template_toolbar">
     <div class="toolbar">
+         <button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
+            <i class="k-icon k-i-excel"></i><span>Save as Excel</span>
+        </button>
+                <div class = "spacew"></div>
     @if (Context.Session.GetString("add_master_part") == "True")
     {
-                <button data-toggle="tooltip" title="Create" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
-                    <i class="k-icon k-i-plus"></i><span>Add New</span>
+                <button data-toggle="tooltip" title="Print" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnDummy">
+                    <i class="k-icon k-i-print"></i><span>Print Dummy</span>
+                </button>
+                <div class = "spacew"></div>
+                <button data-toggle="tooltip" title="Print" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnVaccum">
+                    <i class="k-icon k-i-print"></i><span>Print Vaccum</span>
                 </button>
                 <div class = "spacew"></div>
     }
-        <button data-toggle="tooltip" title="Save as Excel" type="button" class="btn ink-reaction btn-floating-action btn-xs green" id="btnExcel">
-            <i class="k-icon k-i-excel"></i><span>Save as Excel</span>
-        </button>
+                <button data-toggle="tooltip" title="Search" type="button" class="btn ink-reaction btn-floating-action btn-xs " id="btnCreate">
+                    <i class="k-icon k-i-search"></i><span>Search</span>
+                </button>
+                <div class = "spacew"></div>
+       
     </div>
 </script>

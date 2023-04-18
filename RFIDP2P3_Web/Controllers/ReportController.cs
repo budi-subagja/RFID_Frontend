@@ -19,6 +19,21 @@ namespace RFIDP2P3_Web.Controllers
             if (HttpContext.Session.GetString("PIC_ID") != null) return View();
             else return RedirectToAction("Index", "Login");
         }
+        public IActionResult GRPro()
+        {
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
+        }
+        public IActionResult MonitorPallet()
+        {
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
+        }
+        public IActionResult AndonBuffer()
+        {
+            if (HttpContext.Session.GetString("PIC_ID") != null) return View();
+            else return RedirectToAction("Index", "Login");
+        }
 
     }
 }
