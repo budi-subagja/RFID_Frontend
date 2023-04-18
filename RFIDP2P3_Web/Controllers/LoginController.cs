@@ -2,11 +2,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Text;
+using System.Data;
+using System.Net;
+using System.Net.Http;
 
 namespace RFIDP2P3_Web.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly string _config;
+
+        public LoginController(IConfiguration config)
+        {
+            _config = config.GetValue<string>("RFIDAPIBaseUrl");
+        }
+
         public IActionResult Index()
         {
             if (HttpContext.Session.GetString("PIC_ID") == null) return View();
@@ -31,35 +41,53 @@ namespace RFIDP2P3_Web.Controllers
 
                 client.DefaultRequestHeaders.Add("XApiKey", "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp");
 
-                using (var response = await client.PostAsync("https://localhost:7072/api/Login/Index", content))
+                HttpResponseMessage responseMessage = null;
+                try
                 {
-                    apiResponse = await response.Content.ReadAsStringAsync();
-                    if (apiResponse == "User not found/not active")
+                    using (var response = await client.PostAsync(_config + "/Login/Index", content))
                     {
-                        ViewBag.Message = "User not found/not active";
-                        return View();
-                    }
-                    else if (apiResponse == "Incorrect login/password")
-                    {
-                        ViewBag.Message = "Incorrect login/password";
-                        return View();
-                    }
-                    else
-                    {
-                        userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
-                        HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
-                        HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
-                        HttpContext.Session.SetString("UserGroup_Id", userLogin.UserGroup_Id);
-                        foreach (var privilege in userLogin.Privileges)
+                        apiResponse = await response.Content.ReadAsStringAsync();
+                        if (apiResponse == "User not found/not active")
                         {
-                            HttpContext.Session.SetString("read_" + privilege.Menu_Id, privilege.checkedbox_read);
-                            HttpContext.Session.SetString("add_" + privilege.Menu_Id, privilege.checkedbox_add);
-                            HttpContext.Session.SetString("edit_" + privilege.Menu_Id, privilege.checkedbox_edit);
-                            HttpContext.Session.SetString("del_" + privilege.Menu_Id, privilege.checkedbox_del);
+                            ViewBag.Message = "User not found/not active";
+                            return View();
                         }
-                        return RedirectToAction("Index", "Home");
+                        else if (apiResponse == "Incorrect login/password")
+                        {
+                            ViewBag.Message = "Incorrect login/password";
+                            return View();
+                        }
+                        else
+                        {
+                            userLogin = JsonConvert.DeserializeObject<User>(apiResponse.Substring(1, apiResponse.Length - 2));
+                            HttpContext.Session.SetString("PIC_ID", userLogin.PIC_ID);
+                            HttpContext.Session.SetString("PIC_Name", userLogin.PIC_Name);
+                            HttpContext.Session.SetString("UserGroup_Id", userLogin.UserGroup_Id);
+                            HttpContext.Session.SetString("PlantId", userLogin.PlantId);
+                            foreach (var privilege in userLogin.Privileges)
+                            {
+                                HttpContext.Session.SetString("read_" + privilege.Menu_Id, privilege.checkedbox_read);
+                                HttpContext.Session.SetString("add_" + privilege.Menu_Id, privilege.checkedbox_add);
+                                HttpContext.Session.SetString("edit_" + privilege.Menu_Id, privilege.checkedbox_edit);
+                                HttpContext.Session.SetString("del_" + privilege.Menu_Id, privilege.checkedbox_del);
+                            }
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
+                
+                catch (Exception ex)
+                {
+                    if (responseMessage == null)
+                    {
+                        responseMessage = new HttpResponseMessage();
+                    }
+                    responseMessage.StatusCode = HttpStatusCode.InternalServerError;
+                    responseMessage.ReasonPhrase = ex.Message.ToString();
+
+                    ViewBag.Message = responseMessage.ReasonPhrase.ToString();
+                }
+                return View();
             }
         }
 

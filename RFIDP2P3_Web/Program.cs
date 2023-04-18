@@ -8,6 +8,12 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
 });
 
+builder.Services.AddHttpClient("RFIDAPI",
+      client => client.BaseAddress = new Uri(builder.Configuration["RFIDAPIBaseUrl"]));
+
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
+  .CreateClient("RFIDAPI"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
