@@ -6,7 +6,6 @@
 # Node artifact files
 node_modules/
 dist/
-RFIDP2P3_Web/bin/
 # Compiled Java class files
 *.class
 
@@ -49,3 +48,7 @@ Thumbs.db
 *.wmv
 
 /RFIDP2P3_Web/bin/Release/net6.0
+RFIDP2P3_Web/obj/Debug/net6.0/RFIDP2P3_Web.dll
+
+RFIDP2P3_Web/bin/*.*
+/RFIDP2P3_Web/bin/*.*
