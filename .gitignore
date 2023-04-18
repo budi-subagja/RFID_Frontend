@@ -50,5 +50,7 @@ Thumbs.db
 /RFIDP2P3_Web/bin/Release/net6.0
 RFIDP2P3_Web/obj/Debug/net6.0/RFIDP2P3_Web.dll
 
-RFIDP2P3_Web/bin/*.*
-/RFIDP2P3_Web/bin/*.*
+RFIDP2P3_Web/bin/**
+/RFIDP2P3_Web/bin/**
+
+RFIDP2P3_Web/obj/Debug/**
